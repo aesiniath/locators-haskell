@@ -17,6 +17,7 @@ module Data.Locator
 (
     hashStringToBase62,
 
+    Locator(..),
     fromLocator16,
     toLocator16,
     toLocator16a,

@@ -15,6 +15,7 @@
 
 module Data.Locator.Locators
 (
+    Locator(..),
     fromLocator16,
     toLocator16,
     toLocator16a,
@@ -60,7 +61,13 @@ import Numeric (showIntAtBase)
 
 
 --
--- Conversion between decimal and locator 16
+-- | A symbol set with sixteen uniquely pronounceable digits.
+--
+-- The fact there are sixteen symbols is more an indication of a certain degree
+-- of bullheaded-ness on the part of the author, and less of any kind of actual
+-- requirement. We might have a slighly better readback score if we dropped to
+-- 15 or 14 unique characters. It does mean you can match up with hexidecimal,
+-- which is not entirely without merit.
 --
 
 data Locator
@@ -156,9 +163,10 @@ toLocator16 x =
 
 --
 -- | Represent a number in Locator16a format. This uses the Locator16 symbol
--- set, but additionally specifies that no symbol can be repeated. This is
--- done on the cheap; when converting if we end up with '9' '9' we simply take the
--- subsequent digit in the enum, in this case getting you '9' 'K'.
+-- set, and additionally specifies that no symbol can be repeated. The /a/ in
+-- Locator16a represents that this transformation is done on the cheap; when
+-- converting if we end up with \'9\' \'9\' we simply take the subsequent digit in
+-- the enum, in this case getting you \'9\' \'K\'.
 --
 -- Note that the transformation is /not/ reversible. A number like @4369@
 -- (which is @0x1111@, incidentally) encodes as @12C4@. So do @4370@, @4371@,
@@ -218,7 +226,7 @@ fromLocator16 ss =
 
 
 --
--- Given a URL, convert it into a N character hash.
+-- Given a string, convert it into a N character hash.
 --
 
 toWords :: String -> [Word8]
