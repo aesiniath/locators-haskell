@@ -38,14 +38,11 @@ import Debug.Trace
 --
 
 
-import Data.Locators
+import Data.Locator
 
 main = do
-    let num = 0xFFFFFFFFFFFFFFF
-    putStrLn $ toLocator16  num
-    putStrLn $ toLocator16a num
-
+    let n1 = 0x1111111111111111
     putStrLn ""
-    putStrLn $ show $ num
-    putStrLn $ show $ fromLocator16 $ toLocator16  num
-
+    putStrLn $ toLocator16  n1
+    putStrLn $ toLocator16a n1
+    putStrLn ""
