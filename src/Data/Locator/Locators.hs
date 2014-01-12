@@ -142,11 +142,30 @@ digitToLocator c =
         _   -> error "Illegal digit"
 
 
+--
+-- | Given a number, convert it to a string in the Locator16 base 16 symbol
+-- alphabet. You can use this as a replacement for the standard 0-9 A-F
+-- symbols traditionally used to express hexidemimal, though really the fact
+-- that we came up with 16 total unique symbols was a nice co-incidence, not
+-- a requirement.
+--
 toLocator16 :: Int -> String
 toLocator16 x =
     showIntAtBase 16 represent x ""
 
 
+--
+-- | Represent a number in Locator16a format. This uses the Locator16 symbol
+-- set, but additionally specifies that no symbol can be repeated. This is
+-- done on the cheap; when converting if we end up with '9' '9' we simply take the
+-- subsequent digit in the enum, in this case getting you '9' 'K'.
+--
+-- Note that the transformation is /not/ reversible. A number like @4369@
+-- (which is @0x1111@, incidentally) encodes as @12C4@. So do @4370@, @4371@,
+-- and @4372@. The point is not uniqueness, but readibility in adverse
+-- conditions. So while you can count locators, they don't map continuously to
+-- base10 integers.
+--
 toLocator16a :: Int -> String
 toLocator16a n =
   let
@@ -190,6 +209,9 @@ multiply :: Int -> Char -> Int
 multiply acc c =
     acc * 16 + value c
 
+--
+-- | Given a number encoded in Locator16, convert it back to an integer.
+--
 fromLocator16 :: String -> Int
 fromLocator16 ss =
     foldl multiply 0 ss
@@ -223,8 +245,8 @@ digest ws =
 
 
 --
--- | Take an arbitrary string, hash it, then padWithZeros it as a short
--- @digits@-long locator16 string.
+-- | Take an arbitrary string, hash it with SHA1, then padWithZeros it as a
+-- short @digits@-long locator16 string.
 --
 hashStringToLocator16a :: Int -> S.ByteString -> S.ByteString
 hashStringToLocator16a digits s' =

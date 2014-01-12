@@ -9,7 +9,7 @@
 -- the BSD licence.
 --
 
-{-# LANGUAGE OverloadedStrings        #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS -fno-warn-unused-imports #-}
 
 module Main where
@@ -30,7 +30,7 @@ import Data.Serialize
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding
-import Data.Word (Word8, Word32, Word64)
+import Data.Word (Word32, Word64, Word8)
 import Debug.Trace
 
 --
