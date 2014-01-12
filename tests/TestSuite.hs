@@ -45,7 +45,6 @@ suite = do
         testKnownLocator16a
 
 
-
 testRoundTripLocator16 =
     prop "safe conversion to/from Locator16" prop_Locator16
 

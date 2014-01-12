@@ -24,5 +24,5 @@ module Data.Locator
     hashStringToLocator16a
 ) where
 
-import Data.Locator.Hashes
+import Data.Locator.Identifiers
 import Data.Locator.Locators

@@ -13,7 +13,7 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Data.Locator.Hashes
+module Data.Locator.Identifiers
 (
     hashStringToBase62
 ) where
