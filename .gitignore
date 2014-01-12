@@ -1,0 +1,8 @@
+tags
+config.h
+dist/
+junk/
+
+# test binaries
+check
+snippet
