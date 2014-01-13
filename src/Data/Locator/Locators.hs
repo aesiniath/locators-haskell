@@ -11,7 +11,8 @@
 -- This code originally licenced GPLv2. Relicenced BSD3 on 2 Jan 2014.
 --
 
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Data.Locator.Locators
 (
@@ -70,7 +71,7 @@ import Numeric (showIntAtBase)
 -- which is not entirely without merit.
 --
 
-data Locator
+data English16
     = Zero      --  0
     | One       --  1
     | Two       --  2
@@ -90,63 +91,73 @@ data Locator
     deriving (Eq, Ord, Enum, Bounded)
 
 
-instance Show Locator where
+class (Eq α, Ord α, Enum α, Bounded α) => Locator α where
+    locatorToDigit :: α -> Char
+    digitToLocator :: Char -> α
+
+
+instance Locator English16 where
+
+--  locatorToDigit :: English16 -> Char
+    locatorToDigit x =
+        case x of
+            Zero    -> '0'
+            One     -> '1'
+            Two     -> '2'
+            Charlie -> 'C'
+            Four    -> '4'
+            Foxtrot -> 'F'
+            Hotel   -> 'H'
+            Seven   -> '7'
+            Eight   -> '8'
+            Nine    -> '9'
+            Kilo    -> 'K'
+            Lima    -> 'L'
+            Mike    -> 'M'
+            Romeo   -> 'R'
+            XRay    -> 'X'
+            Yankee  -> 'Y'
+
+--  digitToLocator :: Char -> English16
+    digitToLocator c =
+        case c of
+            '0' -> Zero
+            '1' -> One
+            '2' -> Two
+            'C' -> Charlie
+            '4' -> Four
+            'F' -> Foxtrot
+            'H' -> Hotel
+            '7' -> Seven
+            '8' -> Eight
+            '9' -> Nine
+            'K' -> Kilo
+            'L' -> Lima
+            'M' -> Mike
+            'R' -> Romeo
+            'X' -> XRay
+            'Y' -> Yankee
+            _   -> error "Illegal digit"
+
+
+
+represent :: Int -> Char
+represent n =
+    locatorToDigit $ (toEnum n :: English16)    -- FIXME
+
+
+instance Show English16 where
     show x = [c]
       where
         c = locatorToDigit x
 
 
-represent :: Int -> Char
-represent n =
-    locatorToDigit $ toEnum n
-
-
-locatorToDigit :: Locator -> Char
-locatorToDigit x =
-    case x of
-        Zero    -> '0'
-        One     -> '1'
-        Two     -> '2'
-        Charlie -> 'C'
-        Four    -> '4'
-        Foxtrot -> 'F'
-        Hotel   -> 'H'
-        Seven   -> '7'
-        Eight   -> '8'
-        Nine    -> '9'
-        Kilo    -> 'K'
-        Lima    -> 'L'
-        Mike    -> 'M'
-        Romeo   -> 'R'
-        XRay    -> 'X'
-        Yankee  -> 'Y'
 
 
 value :: Char -> Int
 value c =
-    fromEnum $ digitToLocator c
+    fromEnum $ (digitToLocator c :: English16)  -- FIXME
 
-
-digitToLocator :: Char -> Locator
-digitToLocator c =
-    case c of
-        '0' -> Zero
-        '1' -> One
-        '2' -> Two
-        'C' -> Charlie
-        '4' -> Four
-        'F' -> Foxtrot
-        'H' -> Hotel
-        '7' -> Seven
-        '8' -> Eight
-        '9' -> Nine
-        'K' -> Kilo
-        'L' -> Lima
-        'M' -> Mike
-        'R' -> Romeo
-        'X' -> XRay
-        'Y' -> Yankee
-        _   -> error "Illegal digit"
 
 
 --
@@ -177,12 +188,12 @@ toLocator16 x =
 toLocator16a :: Int -> String
 toLocator16a n =
   let
-    ls = convert n []
+    ls = convert n []                        :: [English16]
     (_,us) = mapAccumL uniq Set.empty ls
   in
     map locatorToDigit us
   where
-    convert :: Int -> [Locator] -> [Locator]
+    convert :: Locator α => Int -> [α] -> [α]
     convert 0 xs = xs
     convert i xs =
       let
@@ -191,13 +202,13 @@ toLocator16a n =
       in
         convert d (x:xs)
 
-    uniq :: Set Locator -> Locator -> (Set Locator, Locator)
+    uniq :: Locator α => Set α -> α -> (Set α, α)
     uniq s x =
         if Set.member x s
             then uniq s (subsequent x)
             else (Set.insert x s, x)
 
-    subsequent :: Locator -> Locator
+    subsequent :: Locator α => α -> α
     subsequent x =
         if x == maxBound
             then minBound
