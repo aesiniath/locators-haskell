@@ -199,13 +199,13 @@ toLocator16 x =
 -- conditions. So while you can count locators, they don't map continuously to
 -- base10 integers.
 --
-toLocator16a :: Int -> String
-toLocator16a n =
+toLocator16a :: Int -> Int -> String
+toLocator16a limit n =
   let
-    ls = convert n []                        :: [English16]
+    ls = convert n (replicate limit minBound)       :: [English16]
     (_,us) = mapAccumL uniq Set.empty ls
   in
-    map locatorToDigit us
+    map locatorToDigit (take limit us)
   where
     convert :: Locator α => Int -> [α] -> [α]
     convert 0 xs = xs
@@ -229,13 +229,12 @@ toLocator16a n =
             else succ x
 
 
-padWithZeros :: Int -> Int -> String
-padWithZeros digits x =
+padWithZeros :: Int -> String -> String
+padWithZeros digits str =
     pad ++ str
   where
     pad = take len (replicate digits '0')
     len = digits - length str
-    str = toLocator16a x
 
 
 multiply :: Int -> Char -> Int
@@ -283,12 +282,14 @@ digest ws =
 --
 hashStringToLocator16a :: Int -> S.ByteString -> S.ByteString
 hashStringToLocator16a digits s' =
-    r'
-  where
-    s = S.unpack s'
+  let
+    s  = S.unpack s'
     n  = digest s               -- SHA1 hash
+    r  = mod n limit            -- trim to specified number of base 16 chars
+    x  = toLocator16a digits r   -- express in locator16
+    b' = S.pack x
+  in
+    b'
+  where
     limit = 16 ^ digits
-    x  = mod n limit            -- trim to specified number locator10 chars
-    r  = padWithZeros digits x  -- convert to String
-    r' = S.pack r
 

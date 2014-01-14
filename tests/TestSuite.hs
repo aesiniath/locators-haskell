@@ -43,6 +43,7 @@ suite = do
     describe "Locators" $ do
         testRoundTripLocator16
         testKnownLocator16a
+        testProblematicEdgeCases
 
 
 testRoundTripLocator16 =
@@ -62,8 +63,15 @@ prop_Locator16 i =
 --
 testKnownLocator16a =
     it "constrains Locator16a to unique digits" $ do
-        assertEqual "Incorrect result" "12C4FH" (toLocator16a 0x111111)
-        assertEqual "Incorrect result" "789KLM" (toLocator16a 0x777777)
-        assertEqual "Incorrect result" "MRXY01" (toLocator16a 0xCCCCCC)
+        assertEqual "Incorrect result" "12C4FH" (toLocator16a 6 0x111111)
+        assertEqual "Incorrect result" "789KLM" (toLocator16a 6 0x777777)
+        assertEqual "Incorrect result" "MRXY01" (toLocator16a 6 0xCCCCCC)
+
+testProblematicEdgeCases =
+    it "converstion to Locator16a correct on corner cases" $ do
+        assertEqual "Incorrect result" "012C4F" (toLocator16a 6 0x0)
+        assertEqual "Incorrect result" "FHL417" (hashStringToLocator16a 6 "perf_data")
+        assertEqual "Incorrect result" "K48F01" (hashStringToLocator16a 6 "perf_data/bletchley")
+
 
 
