@@ -18,6 +18,7 @@ module Data.Locator
     hashStringToBase62,
 
     Locator(..),
+    English16(..),
     fromLocator16,
     toLocator16,
     toLocator16a,

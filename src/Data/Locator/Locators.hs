@@ -17,6 +17,7 @@
 module Data.Locator.Locators
 (
     Locator(..),
+    English16(..),
     fromLocator16,
     toLocator16,
     toLocator16a,
@@ -35,31 +36,6 @@ import qualified Data.Set as Set
 import Data.Word
 import Numeric (showIntAtBase)
 
-{-
-
-    ['A','J','K','8']
-    ['B','C','D','E','G','P','T','V', 'Z' '3']
-    -- 'Z' because Americans can't pronounce Zed properly.
-    ['F','S']
-    -- don't use 'S', conflicts '5' in handwriting.
-    ['H']
-    ['I','Y','5']
-    ['L']
-    -- suspect; scores low in readback tests
-    ['M', 'N']
-    ['O', '0']
-    -- can't tell the difference between 'O' and '0', and meanwhile people screw up 'Q' all the time.
-    ['Q','U','W','2']
-    ['R']
-    ['X','6']
-    ['1']
-    -- conflicts with lower case 'l' and upper case 'I'
-    ['4']
-    ['7']
-    -- looks like '1' to Europeans
-    ['9']
--}
-
 
 --
 -- | A symbol set with sixteen uniquely pronounceable digits.
@@ -70,28 +46,66 @@ import Numeric (showIntAtBase)
 -- 15 or 14 unique characters. It does mean you can match up with hexidecimal,
 -- which is not entirely without merit.
 --
-
+-- The grouping of letters and numbers was the hard part; having come up with
+-- the set and deconflicted the choices, the ordering is then entirely
+-- arbitrary. Since there are some numbers, might as well have them at the same
+-- place they correspond to in base 10; the letters were then allocated in
+-- alpha order in the remaining slots.
+--
+{-
+        -- 0 Conflicts with @\'O\'@ obviously, and @\'Q\'@ often enough
+        --
+        -- 2 @\'U\'@, @\'W\'@, and @\'2\'@. @\'W\'@ is disqualifed because of
+        -- the way Australians butcher double-this and triple-that. \"Double
+        -- @\'U\'@\" or \"@\'W\'@\"?
+        --
+        -- C @\'B\'@, @\'C\'@, @\'D\'@, @\'E\'@, @\'G\'@, @\'P\'@, @\'T\'@,
+        -- @\'V\'@, and @\'3\'@ plus @\'Z\'@ because Americans can't pronounce
+        -- Zed properly.
+        --
+        -- 4 @\'4\'@ and @\'5\'@ are often confused, and @\'5\'@, definitely
+        -- out due to its collision with @\'I\'@ when spoken and @\'S\'@ in
+        -- writing.
+        --
+        -- F @\'F\'@ and @\'S\'@ are notoriously confused, making the choice of
+        -- @\'F\'@ borderline, but @\'S\'@ is already disqualified for looking
+        -- like @\'5\'@.
+        --
+        -- K group of @\'A\'@, @\'J\'@, @\'K\'@.
+        --
+        -- L @\'L\'@ has good phonetics, and as long as it's upper case (which
+        -- the whole 'English16' symbol set is) there's no conflict with
+        -- @\'1\'@.
+        --
+        -- M choice from @\'M\'@ and @\'N\'@; the latter is a little too close
+        -- to @\'7\'@.
+        --
+        -- X choice from @\'X\'@ and @\'6\'@.
+        --
+        -- Y choice from @\'I\'@, @\'Y\'@, @\'5\'@. @\'I\'@ is out for the
+        -- usual reason of being similar to @\'1\'@.
+-}
 data English16
-    = Zero      --  0
-    | One       --  1
-    | Two       --  2
-    | Charlie   --  3
-    | Four      --  4
-    | Foxtrot   --  5
-    | Hotel     --  6
-    | Seven     --  7
-    | Eight     --  8
-    | Nine      --  9
-    | Kilo      -- 10
-    | Lima      -- 11
-    | Mike      -- 12
-    | Romeo     -- 13
-    | XRay      -- 14
-    | Yankee    -- 15
+    = Zero      -- ^ @\'0\'@ /0th/
+    | One       -- ^ @\'1\'@ /1st/
+    | Two       -- ^ @\'2\'@ /2nd/
+    | Charlie   -- ^ @\'C\'@ /3rd/
+    | Four      -- ^ @\'4\'@ /4th/
+    | Foxtrot   -- ^ @\'F\'@ /5th/
+    | Hotel     -- ^ @\'H\'@ /6th/
+    | Seven     -- ^ @\'7\'@ /7th/
+    | Eight     -- ^ @\'8\'@ /8th/
+    | Nine      -- ^ @\'9\'@ /9th/
+    | Kilo      -- ^ @\'K\'@ /10th/
+    | Lima      -- ^ @\'L\'@ /11th/
+    | Mike      -- ^ @\'M\'@ /12th/
+    | Romeo     -- ^ @\'R\'@ /13th/
+    | XRay      -- ^ @\'X\'@ /14th/
+    | Yankee    -- ^ @\'Y\'@ /15th/
     deriving (Eq, Ord, Enum, Bounded)
 
 
-class (Eq α, Ord α, Enum α, Bounded α) => Locator α where
+class (Ord α, Enum α, Bounded α) => Locator α where
     locatorToDigit :: α -> Char
     digitToLocator :: Char -> α
 

@@ -26,7 +26,7 @@ library
   include-dirs:      .
 
   exposed-modules:   Data.Locator
-  other-modules:     Data.Locator.Hashes,
+  other-modules:     Data.Locator.Identifiers,
                      Data.Locator.Locators
 
 
