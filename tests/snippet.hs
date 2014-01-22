@@ -37,12 +37,11 @@ import Debug.Trace
 -- What we're testing
 --
 
-
 import Data.Locator
 
 main = do
-    let n1 = 0x1111111111111111
+    let n = 0x1111111111111111
     putStrLn ""
-    putStrLn $ toLocator16  n1
-    putStrLn $ toLocator16a n1
+    putStrLn $ toLocator16  n
+    putStrLn $ toLocator16a 16 n
     putStrLn ""
