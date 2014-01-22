@@ -28,6 +28,7 @@ module Data.Locator.Locators
 import Prelude hiding (toInteger)
 
 import Crypto.Hash.SHA1 as Crypto
+import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as S
 import Data.List (mapAccumL)
@@ -176,10 +177,10 @@ value c =
 
 --
 -- | Given a number, convert it to a string in the Locator16 base 16 symbol
--- alphabet. You can use this as a replacement for the standard 0-9 A-F
--- symbols traditionally used to express hexidemimal, though really the fact
--- that we came up with 16 total unique symbols was a nice co-incidence, not
--- a requirement.
+-- alphabet. You can use this as a replacement for the standard \'0\'-\'9\'
+-- \'A\'-\'F\' symbols traditionally used to express hexidemimal, though really
+-- the fact that we came up with 16 total unique symbols was a nice
+-- co-incidence, not a requirement.
 --
 toLocator16 :: Int -> String
 toLocator16 x =
@@ -190,14 +191,20 @@ toLocator16 x =
 -- | Represent a number in Locator16a format. This uses the Locator16 symbol
 -- set, and additionally specifies that no symbol can be repeated. The /a/ in
 -- Locator16a represents that this transformation is done on the cheap; when
--- converting if we end up with \'9\' \'9\' we simply take the subsequent digit in
--- the enum, in this case getting you \'9\' \'K\'.
+-- converting if we end up with \'9\' \'9\' we simply pick the subsequent digit
+-- in the enum, in this case getting you \'9\' \'K\'.
 --
 -- Note that the transformation is /not/ reversible. A number like @4369@
 -- (which is @0x1111@, incidentally) encodes as @12C4@. So do @4370@, @4371@,
 -- and @4372@. The point is not uniqueness, but readibility in adverse
 -- conditions. So while you can count locators, they don't map continuously to
 -- base10 integers.
+--
+-- The first argument is the number of digits you'd like in the locator; if the
+-- number passed in is less than 16^limit, then the result will be padded.
+--
+-- >>> toLocator16a 6 4369
+-- 12C40F
 --
 toLocator16a :: Int -> Int -> String
 toLocator16a limit n =
@@ -229,14 +236,6 @@ toLocator16a limit n =
             else succ x
 
 
-padWithZeros :: Int -> String -> String
-padWithZeros digits str =
-    pad ++ str
-  where
-    pad = take len (replicate digits '0')
-    len = digits - length str
-
-
 multiply :: Int -> Char -> Int
 multiply acc c =
     acc * 16 + value c
@@ -252,13 +251,6 @@ fromLocator16 ss =
 --
 -- Given a string, convert it into a N character hash.
 --
-
-toWords :: String -> [Word8]
-toWords cs =
-    map fn cs
-  where
-    fn :: Char -> Word8
-    fn c = fromIntegral $ fromEnum c
 
 concatToInteger :: [Word8] -> Int
 concatToInteger bytes =
@@ -277,19 +269,23 @@ digest ws =
 
 
 --
--- | Take an arbitrary string, hash it with SHA1, then padWithZeros it as a
--- short @digits@-long locator16 string.
+-- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
+-- short @digits@-long Locator16 string.
 --
-hashStringToLocator16a :: Int -> S.ByteString -> S.ByteString
-hashStringToLocator16a digits s' =
+-- >>> hashStringToLocator16a 6 "Hello World"
+-- M48HR0
+--
+
+hashStringToLocator16a :: Int -> ByteString -> ByteString
+hashStringToLocator16a limit s' =
   let
     s  = S.unpack s'
     n  = digest s               -- SHA1 hash
-    r  = mod n limit            -- trim to specified number of base 16 chars
-    x  = toLocator16a digits r   -- express in locator16
+    r  = mod n upperBound       -- trim to specified number of base 16 chars
+    x  = toLocator16a limit r   -- express in locator16
     b' = S.pack x
   in
     b'
   where
-    limit = 16 ^ digits
+    upperBound = 16 ^ limit
 

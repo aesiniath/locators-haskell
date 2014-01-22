@@ -55,6 +55,7 @@ test-suite           check
                      bytestring,
                      text,
                      containers,
+                     cryptohash,
                      cereal
 
   hs-source-dirs:    src,tests

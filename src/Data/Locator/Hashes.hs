@@ -13,10 +13,7 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Data.Locator.Hashes
-(
-    hashStringToBase62
-) where
+module Data.Locator.Hashes ( toBase62, fromBase62, hashStringToBase62) where
 
 
 import Prelude hiding (toInteger)
@@ -63,27 +60,17 @@ multiply :: Int -> Char -> Int
 multiply acc c =
     acc * 62 + value c
 
-decode :: String -> Int
-decode ss =
+fromBase62 :: String -> Int
+fromBase62 ss =
     foldl multiply 0 ss
 
-
---
--- Given a URL, convert it into a 5 character hash.
---
-
-toWords :: String -> [Word8]
-toWords cs =
-    map fn cs
-  where
-    fn :: Char -> Word8
-    fn c = fromIntegral $ fromEnum c
 
 concatToInteger :: [Word8] -> Integer
 concatToInteger bytes =
     foldl fn 0 bytes
   where
     fn acc b = (acc * 256) + (fromIntegral b)
+
 
 digest :: String -> Integer
 digest ws =
@@ -96,8 +83,14 @@ digest ws =
 
 
 --
--- | Take an arbitrary string, hash it, then padWithZeros it as a short
--- @digits@-long base62 string.
+-- | Take an arbitrary string, hash it, then pad it with zeros up to be a
+-- @digits@-long string in base 62.
+--
+-- You may be interested to know that the 160-bit SHA1 hash used here can be
+-- expressed without loss as 27 digits of base 62, for example:
+--
+-- >>> hashStringToBase62 27 "Hello World"
+-- 1T8Sj4C5jVU6iQXCwCwJEPSWX6u
 --
 hashStringToBase62 :: Int -> S.ByteString -> S.ByteString
 hashStringToBase62 digits s' =
