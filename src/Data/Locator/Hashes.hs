@@ -19,6 +19,7 @@ module Data.Locator.Hashes ( toBase62, fromBase62, hashStringToBase62) where
 import Prelude hiding (toInteger)
 
 import Crypto.Hash.SHA1 as Crypto
+import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as S
 import Data.Char (chr, isDigit, isLower, isUpper, ord)
@@ -56,11 +57,11 @@ value c
     | isLower c = ord c - 97 + 36
     | otherwise = 0
 
-multiply :: Int -> Char -> Int
+multiply :: Integer -> Char -> Integer
 multiply acc c =
-    acc * 62 + value c
+    acc * 62 + (fromIntegral $ value c)
 
-fromBase62 :: String -> Int
+fromBase62 :: String -> Integer
 fromBase62 ss =
     foldl multiply 0 ss
 
@@ -92,7 +93,7 @@ digest ws =
 -- >>> hashStringToBase62 27 "Hello World"
 -- 1T8Sj4C5jVU6iQXCwCwJEPSWX6u
 --
-hashStringToBase62 :: Int -> S.ByteString -> S.ByteString
+hashStringToBase62 :: Int -> ByteString -> ByteString
 hashStringToBase62 digits s' =
     r'
   where
