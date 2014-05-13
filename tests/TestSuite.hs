@@ -45,6 +45,9 @@ suite = do
         testKnownLocator16a
         testProblematicEdgeCases
 
+    describe "Hashes" $ do
+        testPaddingRefactored
+
 
 testRoundTripLocator16 =
     prop "safe conversion to/from Locator16" prop_Locator16
@@ -74,4 +77,9 @@ testProblematicEdgeCases =
         assertEqual "Incorrect result" "K48F01" (hashStringToLocator16a 6 "perf_data/bletchley")
 
 
+
+testPaddingRefactored =
+    it "correctly pads strings" $ do
+        assertEqual "Incorrect result"  "00001" (padWithZeros 5 "1")
+        assertEqual "Incorrect result" "123456" (padWithZeros 5 "123456")
 

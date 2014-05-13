@@ -13,7 +13,12 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Data.Locator.Hashes ( toBase62, fromBase62, hashStringToBase62) where
+module Data.Locator.Hashes (
+    toBase62,
+    fromBase62,
+    padWithZeros,
+    hashStringToBase62
+) where
 
 
 import Prelude hiding (toInteger)
@@ -41,13 +46,20 @@ toBase62 :: Integer -> String
 toBase62 x =
     showIntAtBase 62 represent x ""
 
-padWithZeros :: Int -> Integer -> String
-padWithZeros digits x =
+--
+-- | Utility function to prepend \'0\' characters to a string representing a
+-- number. This allows you to ensure a fixed width for numbers that are less
+-- than the desired width in size. This comes up frequently when representing
+-- numbers in other bases greater than 10 as they are inevitably presented as
+-- text, and not having them evenly justified can (at best) be ugly and (at
+-- worst) actually lead to parsing and conversion bugs.
+--
+padWithZeros :: Int -> String -> String
+padWithZeros digits str =
     pad ++ str
   where
     pad = take len (replicate digits '0')
     len = digits - length str
-    str = toBase62 x
 
 
 value :: Char -> Int
@@ -101,6 +113,7 @@ hashStringToBase62 digits s' =
     n  = digest s               -- SHA1 hash
     limit = 62 ^ digits
     x  = mod n limit            -- trim to specified number base62 chars
-    r  = padWithZeros digits x  -- convert to String
+    str = toBase62 x
+    r  = padWithZeros digits str  -- convert to String
     r' = S.pack r
 

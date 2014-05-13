@@ -63,6 +63,7 @@ module Data.Locator
     -- * Base62
     toBase62,
     fromBase62,
+    padWithZeros,
     hashStringToBase62
 
 ) where

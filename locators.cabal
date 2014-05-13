@@ -1,11 +1,11 @@
 cabal-version:       >= 1.10
 name:                locators
-version:             0.2.3.1
+version:             0.2.4.1
 synopsis:            Human exchangable identifiers and locators
 license:             BSD3
 author:              Andrew Cowie <andrew@operationaldynamics.com>
 maintainer:          Andrew Cowie <andrew@operationaldynamics.com>
-copyright:           © 2013 Operational Dynamics Consulting, Pty Ltd and Others
+copyright:           © 2013-2014 Operational Dynamics Consulting, Pty Ltd and Others
 category:            Other
 tested-with:         GHC == 7.6
 stability:           experimental
