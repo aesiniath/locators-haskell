@@ -76,10 +76,10 @@ testProblematicEdgeCases =
         assertEqual "Incorrect result" "FHL417" (hashStringToLocator16a 6 "perf_data")
         assertEqual "Incorrect result" "K48F01" (hashStringToLocator16a 6 "perf_data/bletchley")
 
-
-
 testPaddingRefactored =
     it "correctly pads strings" $ do
         assertEqual "Incorrect result"  "00001" (padWithZeros 5 "1")
         assertEqual "Incorrect result" "123456" (padWithZeros 5 "123456")
+        assertEqual "Incorrect result" "LygHa16AHYG" (padWithZeros 11 . toBase62 $ 2^64)
+        assertEqual "Incorrect result" "k8SQgkJtxLo" (hashStringToBase62 11 . S.pack . show $ 2^64)
 
