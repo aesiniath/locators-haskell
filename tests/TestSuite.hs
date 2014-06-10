@@ -46,6 +46,7 @@ suite = do
         testRoundTripLocator16
         testKnownLocator16a
         testProblematicEdgeCases
+        testNegativeNumbers
 
     describe "Hashes" $ do
         testPaddingRefactored
@@ -85,3 +86,6 @@ testPaddingRefactored =
         assertEqual "Incorrect result" "LygHa16AHYG" (padWithZeros 11 . toBase62 $ 2^64)
         assertEqual "Incorrect result" "k8SQgkJtxLo" (hashStringToBase62 11 . S.pack . show $ 2^64)
 
+testNegativeNumbers =
+    it "doesn't explode if fed a negative number" $ do
+        assertEqual "Incorrect outcome" "1" (toLocator16a 1 (-1))

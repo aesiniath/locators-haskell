@@ -209,7 +209,8 @@ toLocator16 x =
 toLocator16a :: Int -> Int -> String
 toLocator16a limit n =
   let
-    ls = convert n (replicate limit minBound)       :: [English16]
+    n' = abs n
+    ls = convert n' (replicate limit minBound)       :: [English16]
     (_,us) = mapAccumL uniq Set.empty ls
   in
     map locatorToDigit (take limit us)

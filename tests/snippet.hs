@@ -45,3 +45,4 @@ main = do
     putStrLn $ toLocator16  n
     putStrLn $ toLocator16a 16 n
     putStrLn ""
+    putStrLn $ toLocator16a 6 (-1)
