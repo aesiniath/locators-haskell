@@ -52,7 +52,7 @@ MAKEFLAGS=-s -R
 REDIRECT=2>/dev/null
 endif
 
-.PHONY: all test tests config
+.PHONY: all test tests config dist
 
 #
 # Source files, main and testing

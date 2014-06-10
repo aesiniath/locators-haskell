@@ -12,6 +12,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS -fno-warn-unused-imports #-}
 {-# OPTIONS -fno-warn-orphans #-}
+{-# OPTIONS -fno-warn-type-defaults #-}
+{-# OPTIONS -fno-warn-missing-signatures #-}
 
 module TestSuite where
 
