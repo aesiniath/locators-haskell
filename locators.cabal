@@ -1,6 +1,6 @@
 cabal-version:       >= 1.10
 name:                locators
-version:             0.2.4.1
+version:             0.2.4.2
 synopsis:            Human exchangable identifiers and locators
 license:             BSD3
 author:              Andrew Cowie <andrew@operationaldynamics.com>
