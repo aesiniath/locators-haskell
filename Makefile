@@ -132,13 +132,14 @@ format: $(CORE_SOURCES) $(TEST_SOURCES)
 	stylish-haskell -i $^
 
 #
-# Specific to building $(PROJECT), in this case ingestd
+# Specific to building $(PROJECT), in this case locators
 #
 
 config: config.h
 
 config.h: locators.cabal # Setup.hs
 	@/bin/echo -e "CABAL\tconfigure"
+	cabal install --only-dependencies
 	cabal configure --enable-tests
 	touch config.h	# bit of a no-op, but a useful placeholder
 

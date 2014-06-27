@@ -17,7 +17,6 @@ library
 
   build-depends:     base >= 4 && <5,
                      bytestring,
-                     text,
                      containers,
                      cryptohash,
                      cereal
@@ -53,7 +52,6 @@ test-suite           check
                      hspec-expectations,
                      QuickCheck,
                      bytestring,
-                     text,
                      containers,
                      cryptohash,
                      cereal
