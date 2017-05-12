@@ -1,13 +1,13 @@
 cabal-version:       >= 1.10
 name:                locators
-version:             0.2.4.2
+version:             0.2.4.3
 synopsis:            Human exchangable identifiers and locators
 license:             BSD3
 author:              Andrew Cowie <andrew@operationaldynamics.com>
 maintainer:          Andrew Cowie <andrew@operationaldynamics.com>
-copyright:           © 2013-2014 Operational Dynamics Consulting, Pty Ltd and Others
+copyright:           © 2013-2017 Operational Dynamics Consulting, Pty Ltd and Others
 category:            Other
-tested-with:         GHC == 7.6
+tested-with:         GHC == 8.0
 stability:           experimental
 
 build-type:          Simple
@@ -30,7 +30,6 @@ library
 
 
   ghc-options:       -O2
-                     -threaded
                      -Wall
                      -Wwarn
                      -fwarn-tabs
@@ -38,7 +37,7 @@ library
                      -fno-warn-missing-signatures
                      -fno-warn-unused-do-bind
 
-  ghc-prof-options:  -prof -fprof-auto-top
+  ghc-prof-options:  -fprof-auto-top
 
 
 test-suite           check
@@ -54,10 +53,12 @@ test-suite           check
                      bytestring,
                      containers,
                      cryptohash,
-                     cereal
+                     cereal,
+                     locators
 
-  hs-source-dirs:    src,tests
+  hs-source-dirs:    tests
   main-is:           check.hs
+  other-modules:     TestSuite
 
   ghc-options:       -O2
                      -threaded
@@ -70,7 +71,7 @@ test-suite           check
 
   include-dirs:      .
 
-  ghc-prof-options:  -prof -fprof-auto-top
+  ghc-prof-options:  -fprof-auto-top
 
 
 source-repository    head
