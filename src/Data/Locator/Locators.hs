@@ -1,7 +1,7 @@
 --
 -- Human exchangable identifiers and locators
 --
--- Copyright © 2011-2014 Operational Dynamics Consulting, Pty Ltd
+-- Copyright © 2011-2017 Operational Dynamics Consulting, Pty Ltd
 --
 -- The code in this file, and the program it is a part of, is
 -- made available to you by its authors as open source software:
