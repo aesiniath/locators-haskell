@@ -3,11 +3,19 @@ name:                locators
 version:             0.2.4.3
 synopsis:            Human exchangable identifiers and locators
 license:             BSD3
+license-file:        LICENCE
+description:         
+ /Overview/
+ .
+ Simple identifiers (as used, for example, as "locators" in airline reservation
+ systems) using a subset of the Latin1 alphabet whose characters are unambigious
+ when written or spoken.
+
 author:              Andrew Cowie <andrew@operationaldynamics.com>
 maintainer:          Andrew Cowie <andrew@operationaldynamics.com>
-copyright:           © 2013-2017 Operational Dynamics Consulting, Pty Ltd and Others
+copyright:           © 2013-2018 Operational Dynamics Consulting, Pty Ltd and Others
 category:            Other
-tested-with:         GHC == 8.0
+tested-with:         GHC == 8.2
 stability:           experimental
 
 build-type:          Simple
@@ -29,15 +37,14 @@ library
                      Data.Locator.Locators
 
 
-  ghc-options:       -O2
-                     -Wall
+  ghc-options:       -Wall
                      -Wwarn
                      -fwarn-tabs
                      -funbox-strict-fields
                      -fno-warn-missing-signatures
                      -fno-warn-unused-do-bind
 
-  ghc-prof-options:  -fprof-auto-top
+  ghc-prof-options:  -fprof-auto-exported
 
 
 test-suite           check
@@ -60,8 +67,7 @@ test-suite           check
   main-is:           check.hs
   other-modules:     TestSuite
 
-  ghc-options:       -O2
-                     -threaded
+  ghc-options:       -threaded
                      -Wall
                      -Wwarn
                      -fwarn-tabs
@@ -70,8 +76,6 @@ test-suite           check
                      -fno-warn-unused-do-bind
 
   include-dirs:      .
-
-  ghc-prof-options:  -fprof-auto-top
 
 
 source-repository    head
