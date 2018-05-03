@@ -69,23 +69,23 @@ prop_Locator16 i =
 --
 testKnownLocator16a =
     it "constrains Locator16a to unique digits" $ do
-        assertEqual "Incorrect result" "12C4FH" (toLocator16a 6 0x111111)
-        assertEqual "Incorrect result" "789KLM" (toLocator16a 6 0x777777)
-        assertEqual "Incorrect result" "MRXY01" (toLocator16a 6 0xCCCCCC)
+        toLocator16a 6 0x111111 `shouldBe` "12C4FH"
+        toLocator16a 6 0x777777 `shouldBe` "789KLM"
+        toLocator16a 6 0xCCCCCC `shouldBe` "MRXY01"
 
 testProblematicEdgeCases =
     it "converstion to Locator16a correct on corner cases" $ do
-        assertEqual "Incorrect result" "012C4F" (toLocator16a 6 0x0)
-        assertEqual "Incorrect result" "FHL417" (hashStringToLocator16a 6 "perf_data")
-        assertEqual "Incorrect result" "K48F01" (hashStringToLocator16a 6 "perf_data/bletchley")
+        toLocator16a 6 0x0 `shouldBe` "012C4F"
+        hashStringToLocator16a 6 "perf_data" `shouldBe` "FHL417"
+        hashStringToLocator16a 6 "perf_data/bletchley" `shouldBe` "K48F01"
 
 testPaddingRefactored =
     it "correctly pads strings" $ do
-        assertEqual "Incorrect result"  "00001" (padWithZeros 5 "1")
-        assertEqual "Incorrect result" "123456" (padWithZeros 5 "123456")
-        assertEqual "Incorrect result" "LygHa16AHYG" (padWithZeros 11 . toBase62 $ 2^64)
-        assertEqual "Incorrect result" "k8SQgkJtxLo" (hashStringToBase62 11 . S.pack . show $ 2^64)
+        padWithZeros 5 "1" `shouldBe` "00001"
+        padWithZeros 5 "123456" `shouldBe` "123456"
+        (padWithZeros 11 . toBase62 $ 2^64) `shouldBe` "LygHa16AHYG"
+        (hashStringToBase62 11 . S.pack . show $ 2^64) `shouldBe` "k8SQgkJtxLo"
 
 testNegativeNumbers =
     it "doesn't explode if fed a negative number" $ do
-        assertEqual "Incorrect outcome" "1" (toLocator16a 1 (-1))
+        toLocator16a 1 (-1) `shouldBe` "1"
