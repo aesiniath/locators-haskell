@@ -29,7 +29,7 @@ library
                      cryptohash,
                      cereal
 
-  hs-source-dirs:    src
+  hs-source-dirs:    lib
   include-dirs:      .
 
   exposed-modules:   Data.Locator
