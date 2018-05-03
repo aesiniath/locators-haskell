@@ -1,6 +1,6 @@
-cabal-version:       >= 1.10
+cabal-version:       1.24
 name:                locators
-version:             0.2.4.3
+version:             0.2.4.4
 synopsis:            Human exchangable identifiers and locators
 license:             BSD3
 license-file:        LICENCE
@@ -15,7 +15,7 @@ author:              Andrew Cowie <andrew@operationaldynamics.com>
 maintainer:          Andrew Cowie <andrew@operationaldynamics.com>
 copyright:           © 2013-2018 Operational Dynamics Consulting, Pty Ltd and Others
 category:            Other
-tested-with:         GHC == 8.2
+tested-with:         GHC == 8.2.2, GHC 8.4.2
 stability:           experimental
 
 build-type:          Simple
@@ -26,8 +26,7 @@ library
   build-depends:     base >= 4 && <5,
                      bytestring,
                      containers,
-                     cryptohash,
-                     cereal
+                     cryptohash
 
   hs-source-dirs:    lib
   include-dirs:      .
@@ -60,7 +59,6 @@ test-suite           check
                      bytestring,
                      containers,
                      cryptohash,
-                     cereal,
                      locators
 
   hs-source-dirs:    tests
