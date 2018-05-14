@@ -10,20 +10,17 @@
 --
 -- This code originally licenced GPLv2. Relicenced BSD3 on 2 Jan 2014.
 --
-
-{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Data.Locator.Locators
-(
-    Locator(..),
-    English16(..),
-    fromLocator16,
-    toLocator16,
-    toLocator16a,
-    hashStringToLocator16a
-) where
-
+  ( Locator(..)
+  , English16(..)
+  , fromLocator16
+  , toLocator16
+  , toLocator16a
+  , hashStringToLocator16a
+  ) where
 
 import Prelude hiding (toInteger)
 
@@ -155,25 +152,18 @@ instance Locator English16 where
             _   -> error "Illegal digit"
 
 
-
 represent :: Int -> Char
 represent n =
     locatorToDigit $ (toEnum n :: English16)    -- FIXME
-
 
 instance Show English16 where
     show x = [c]
       where
         c = locatorToDigit x
 
-
-
-
 value :: Char -> Int
 value c =
     fromEnum $ (digitToLocator c :: English16)  -- FIXME
-
-
 
 --
 -- | Given a number, convert it to a string in the Locator16 base 16 symbol
@@ -185,7 +175,6 @@ value c =
 toLocator16 :: Int -> String
 toLocator16 x =
     showIntAtBase 16 represent x ""
-
 
 --
 -- | Represent a number in Locator16a format. This uses the Locator16 symbol
@@ -236,7 +225,6 @@ toLocator16a limit n =
             then minBound
             else succ x
 
-
 multiply :: Int -> Char -> Int
 multiply acc c =
     acc * 16 + value c
@@ -248,11 +236,9 @@ fromLocator16 :: String -> Int
 fromLocator16 ss =
     foldl multiply 0 ss
 
-
 --
 -- Given a string, convert it into a N character hash.
 --
-
 concatToInteger :: [Word8] -> Int
 concatToInteger bytes =
     foldl fn 0 bytes
@@ -268,7 +254,6 @@ digest ws =
     h' = Crypto.hash x'
     x' = S.pack ws
 
-
 --
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
 -- short @digits@-long Locator16 string.
@@ -276,7 +261,6 @@ digest ws =
 -- >>> hashStringToLocator16a 6 "Hello World"
 -- M48HR0
 --
-
 hashStringToLocator16a :: Int -> ByteString -> ByteString
 hashStringToLocator16a limit s' =
   let
