@@ -12,6 +12,7 @@
 --
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Data.Locator.Locators
   ( Locator(..)
@@ -109,8 +110,7 @@ class (Ord α, Enum α, Bounded α) => Locator α where
 
 
 instance Locator English16 where
-
---  locatorToDigit :: English16 -> Char
+    locatorToDigit :: English16 -> Char
     locatorToDigit x =
         case x of
             Zero    -> '0'
@@ -130,7 +130,7 @@ instance Locator English16 where
             XRay    -> 'X'
             Yankee  -> 'Y'
 
---  digitToLocator :: Char -> English16
+    digitToLocator :: Char -> English16
     digitToLocator c =
         case c of
             '0' -> Zero
