@@ -1,7 +1,7 @@
 --
 -- Human exchangable identifiers and locators
 --
--- Copyright © 2011-2014 Operational Dynamics Consulting, Pty Ltd
+-- Copyright © 2011-2018 Operational Dynamics Consulting, Pty Ltd
 --
 -- The code in this file, and the program it is a part of, is
 -- made available to you by its authors as open source software:
@@ -13,15 +13,14 @@
 
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Data.Locator.Latin25
-(
-    Latin25(..),
-    toLocator25,
-    toLocator25a,
-    hashStringToLocator25a
-) where
-
+  ( Latin25(..),
+  , toLocator25,
+  , toLocator25a,
+  , hashStringToLocator25a
+  ) where
 
 import Prelude hiding (toInteger)
 
@@ -29,8 +28,12 @@ import Crypto.Hash.SHA1 as Crypto
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as S
+import Data.List (mapAccumL)
+import Data.Set (Set)
+import qualified Data.Set as Set
+import Data.Word
+import Numeric (showIntAtBase)
 
-import Data.Locator.Locators
 
 data Latin25
     = Zero      -- ^ @\'0\'@ /0th/
@@ -79,6 +82,8 @@ instance Locator Latin25 where
             One     -> '1'
             Three   -> '3'
             Four    -> '4'
+            Foxtrot -> 'F'
+            Hotel   -> 'H'
             Seven   -> '7'
             Eight   -> '8'
             Nine    -> '9'
@@ -102,6 +107,7 @@ instance Locator Latin25 where
             Yankee  -> 'Y'
             Zulu    -> 'Z'
 
+    digitToLocator :: Char -> Latin25
     digitToLocator c =
         case c of
             '0' -> Zero
@@ -133,14 +139,14 @@ instance Locator Latin25 where
             _   -> error "Illegal digit"
 
 
+represent :: Int -> Char
+represent n =
+    locatorToDigit $ (toEnum n :: English16)    -- FIXME
 
 instance Show Latin25 where
     show x = [c]
       where
         c = locatorToDigit x
-
-
-
 
 value :: Char -> Int
 value c =
@@ -159,14 +165,54 @@ toLocator25 :: Int -> String
 toLocator25 x =
     map locatorToDigit (convertToBase 25 x [] :: [Latin25])
 
-
-toLocator25a :: Int -> Int -> String
-toLocator25a limit n =
+--
+-- | Represent a number in Latin25a format. This uses the Latin25 symbol
+-- set, and additionally specifies that no symbol can be repeated. The /a/ in
+-- Latin25a represents that this transformation is done on the cheap; when
+-- converting if we end up with \'9\' \'9\' we simply pick the subsequent digit
+-- in the enum, in this case getting you \'9\' \'A\'.
+--
+-- Note that the transformation is /not/ reversible. A number like @4369@
+-- (which is @0x1111@, incidentally) encodes as @12C4@. So do @4370@, @4371@,
+-- and @4372@. The point is not uniqueness, but readibility in adverse
+-- conditions. So while you can count locators, they don't map continuously to
+-- base10 integers.
+--
+-- The first argument is the number of digits you'd like in the locator; if the
+-- number passed in is less than 25^limit, then the result will be padded.
+--
+-- >>> toEnglish25a 6 4369
+-- FIXME
+--
+toEnglish25a :: Int -> Int -> String
+toEnglish25a limit n =
   let
-    symbols = toLocatorUnique limit n :: [Latin25]
+    n' = abs n
+    ls = convert n' (replicate limit minBound)       :: [Latin25]
+    (_,us) = mapAccumL uniq Set.empty ls
   in
-    map locatorToDigit symbols
+    map locatorToDigit (take limit us)
+  where
+    convert :: Locator α => Int -> [α] -> [α]
+    convert 0 xs = xs
+    convert i xs =
+      let
+        (d,r) = divMod i 16
+        x = toEnum r
+      in
+        convert d (x:xs)
 
+    uniq :: Locator α => Set α -> α -> (Set α, α)
+    uniq s x =
+        if Set.member x s
+            then uniq s (subsequent x)
+            else (Set.insert x s, x)
+
+    subsequent :: Locator α => α -> α
+    subsequent x =
+        if x == maxBound
+            then minBound
+            else succ x
 
 multiply :: Int -> Char -> Int
 multiply acc c =
@@ -179,31 +225,38 @@ fromLatin25 :: String -> Int
 fromLatin25 ss =
     foldl multiply 0 ss
 
-
 --
--- Given a string of bytes, cast it back to a number
+-- Given a string, convert it into a N character hash.
 --
-
-concatToInteger :: ByteString -> Int
+concatToInteger :: [Word8] -> Int
 concatToInteger bytes =
-    B.foldl fn 0 bytes
+    foldl fn 0 bytes
   where
     fn acc b = (acc * 256) + (fromIntegral b)
 
-digest :: ByteString -> Int
-digest x' =
+digest :: String -> Int
+digest ws =
     i
   where
-    i  = concatToInteger h'
+    i  = concatToInteger h
+    h  = B.unpack h'
     h' = Crypto.hash x'
+    x' = S.pack ws
 
-
-hashStringToLocator25a :: Int -> ByteString -> ByteString
-hashStringToLocator25a limit s =
+--
+-- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
+-- short @digits@-long English25 string.
+--
+-- >>> hashStringToLatin25a 6 "Hello World"
+-- M48HR0
+--
+hashStringToLatin25a :: Int -> ByteString -> ByteString
+hashStringToLocator16a limit s' =
   let
+    s  = S.unpack s'
     n  = digest s               -- SHA1 hash
     r  = mod n upperBound       -- trim to specified number of base 25 chars
-    x  = toLocator25a limit r     
+    x  = toLatin25a limit r   -- express in Latin25
     b' = S.pack x
   in
     b'
