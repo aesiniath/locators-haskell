@@ -16,24 +16,23 @@
 {-# LANGUAGE InstanceSigs #-}
 
 module Data.Locator.Latin25
-  ( Latin25(..),
-  , toLocator25,
-  , toLocator25a,
-  , hashStringToLocator25a
+  ( Latin25(..)
+  , toLatin25
+  , toLatin25a
+  , fromLatin25
+  , hashStringToLatin25a
   ) where
 
 import Prelude hiding (toInteger)
 
-import Crypto.Hash.SHA1 as Crypto
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as S
 import Data.List (mapAccumL)
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.Word
 import Numeric (showIntAtBase)
 
+import Data.Locator.Common
 
 data Latin25
     = Zero      -- ^ @\'0\'@ /0th/
@@ -82,8 +81,6 @@ instance Locator Latin25 where
             One     -> '1'
             Three   -> '3'
             Four    -> '4'
-            Foxtrot -> 'F'
-            Hotel   -> 'H'
             Seven   -> '7'
             Eight   -> '8'
             Nine    -> '9'
@@ -139,20 +136,10 @@ instance Locator Latin25 where
             _   -> error "Illegal digit"
 
 
-represent :: Int -> Char
-represent n =
-    locatorToDigit $ (toEnum n :: English16)    -- FIXME
-
 instance Show Latin25 where
     show x = [c]
       where
         c = locatorToDigit x
-
-value :: Char -> Int
-value c =
-    fromEnum $ (digitToLocator c :: Latin25)  -- FIXME
-
-
 
 --
 -- | Given a number, convert it to a string in the Locator16 base 16 symbol
@@ -161,9 +148,9 @@ value c =
 -- the fact that we came up with 16 total unique symbols was a nice
 -- co-incidence, not a requirement.
 --
-toLocator25 :: Int -> String
-toLocator25 x =
-    map locatorToDigit (convertToBase 25 x [] :: [Latin25])
+toLatin25 :: Int -> String
+toLatin25 x =
+    showIntAtBase 25 (represent Yankee) x ""
 
 --
 -- | Represent a number in Latin25a format. This uses the Latin25 symbol
@@ -184,8 +171,8 @@ toLocator25 x =
 -- >>> toEnglish25a 6 4369
 -- FIXME
 --
-toEnglish25a :: Int -> Int -> String
-toEnglish25a limit n =
+toLatin25a :: Int -> Int -> String
+toLatin25a limit n =
   let
     n' = abs n
     ls = convert n' (replicate limit minBound)       :: [Latin25]
@@ -214,34 +201,12 @@ toEnglish25a limit n =
             then minBound
             else succ x
 
-multiply :: Int -> Char -> Int
-multiply acc c =
-    acc * 25 + value c
-
 --
 -- | Given a number encoded in Locator16, convert it back to an integer.
 --
 fromLatin25 :: String -> Int
 fromLatin25 ss =
-    foldl multiply 0 ss
-
---
--- Given a string, convert it into a N character hash.
---
-concatToInteger :: [Word8] -> Int
-concatToInteger bytes =
-    foldl fn 0 bytes
-  where
-    fn acc b = (acc * 256) + (fromIntegral b)
-
-digest :: String -> Int
-digest ws =
-    i
-  where
-    i  = concatToInteger h
-    h  = B.unpack h'
-    h' = Crypto.hash x'
-    x' = S.pack ws
+    foldl (multiply Zulu) 0 ss
 
 --
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
@@ -251,7 +216,7 @@ digest ws =
 -- M48HR0
 --
 hashStringToLatin25a :: Int -> ByteString -> ByteString
-hashStringToLocator16a limit s' =
+hashStringToLatin25a limit s' =
   let
     s  = S.unpack s'
     n  = digest s               -- SHA1 hash
