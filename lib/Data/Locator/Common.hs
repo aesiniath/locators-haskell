@@ -109,7 +109,7 @@ toLocatorUnique limit n (_ :: α) =
 multiply :: Locator α => α -> Int -> Char -> Int
 multiply (locator :: a) acc c =
   let
-    base = fromEnum (maxBound @a)
+    base = fromEnum (maxBound @a) + 1
   in
     (acc * base) + (value locator c)
 
