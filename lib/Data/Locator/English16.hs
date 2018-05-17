@@ -22,6 +22,12 @@ module Data.Locator.English16
   , toEnglish16
   , toEnglish16a
   , hashStringToEnglish16a
+
+    -- Deprecated
+  , fromLocator16
+  , toLocator16
+  , toLocator16a
+  , hashStringToLocator16a
   ) where
 
 import Prelude hiding (toInteger)
@@ -236,3 +242,20 @@ hashStringToEnglish16a limit s' =
   where
     upperBound = 16 ^ limit
 
+
+toLocator16 :: Int -> String
+toLocator16 = toEnglish16
+{-# DEPRECATED toLocator16 "Use toEnglish16 instead" #-}
+
+toLocator16a :: Int -> Int -> String
+toLocator16a = toEnglish16a
+{-# DEPRECATED toLocator16a "Use toEnglish16a instead" #-}
+
+fromLocator16 :: [Char] -> Int
+fromLocator16 = fromEnglish16
+{-# DEPRECATED fromLocator16 "Use fromEnglish16 instead" #-}
+
+
+hashStringToLocator16a :: Int -> ByteString -> ByteString
+hashStringToLocator16a = hashStringToEnglish16a
+{-# DEPRECATED hashStringToLocator16a "Use hashStringToEnglish16a instead" #-}

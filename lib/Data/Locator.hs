@@ -1,7 +1,7 @@
 --
 -- Human exchangable identifiers and locators
 --
--- Copyright © 2011-2017 Operational Dynamics Consulting, Pty Ltd
+-- Copyright © 2011-2018 Operational Dynamics Consulting, Pty Ltd
 --
 -- The code in this file, and the program it is a part of, is
 -- made available to you by its authors as open source software:
@@ -43,7 +43,7 @@
 --
 module Data.Locator
 (
-    -- * Locator16
+    -- * Locator English16
     -- | This was somewhat inspired by the record locators used by the civilian
     -- air travel industry, but with the restriction that the symbol set is
     -- carefully chosen (aviation locators do heroic things like excluding
@@ -53,20 +53,32 @@ module Data.Locator
     --
     -- @TODO@ /link to paper with pronunciation study when published./
     --
-    Locator(..),
-    English16(..),
-    fromLocator16,
-    toLocator16,
-    toLocator16a,
-    hashStringToLocator16a,
+    Locator(..)
+  , English16(..)
+  , fromEnglish16
+  , toEnglish16
+  , toEnglish16a
+  , hashStringToEnglish16a
+
+  , fromLatin25
+  , toLatin25
+  , toLatin25a
+  , hashStringToLatin25a
 
     -- * Base62
-    toBase62,
-    fromBase62,
-    padWithZeros,
-    hashStringToBase62
+  , toBase62
+  , fromBase62
+  , padWithZeros
+  , hashStringToBase62
 
+    -- * Deprecated
+  , fromLocator16
+  , toLocator16
+  , toLocator16a
+  , hashStringToLocator16a
 ) where
 
+import Data.Locator.Common
 import Data.Locator.Hashes
-import Data.Locator.Locators
+import Data.Locator.English16
+import Data.Locator.Latin25

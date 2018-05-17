@@ -1,6 +1,6 @@
 cabal-version:       1.24
 name:                locators
-version:             0.2.4.4
+version:             0.3.0.1
 synopsis:            Human exchangable identifiers and locators
 license:             BSD3
 license-file:        LICENCE
@@ -32,8 +32,10 @@ library
   include-dirs:      .
 
   exposed-modules:   Data.Locator
-  other-modules:     Data.Locator.Hashes,
-                     Data.Locator.Locators
+  other-modules:     Data.Locator.Common,
+                     Data.Locator.Hashes,
+                     Data.Locator.English16
+                     Data.Locator.Latin25
 
 
   ghc-options:       -Wall
