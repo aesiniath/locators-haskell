@@ -43,8 +43,8 @@ import Data.Locator
 suite :: Spec
 suite = do
     describe "Locators" $ do
-        testRoundTripLocator16
-        testKnownLocator16a
+        testRoundTripEnglish16
+        testKnownEnglish16a
         testProblematicEdgeCases
         testNegativeNumbers
 
@@ -52,14 +52,14 @@ suite = do
         testPaddingRefactored
 
 
-testRoundTripLocator16 =
-    prop "safe conversion to/from Locator16" prop_Locator16
+testRoundTripEnglish16 =
+    prop "safe conversion to/from English16" prop_English16
 
-prop_Locator16 :: Int -> Bool
-prop_Locator16 i =
+prop_English16 :: Int -> Bool
+prop_English16 i =
   let
     n = abs i
-    decoded = fromLocator16 (toLocator16 n)
+    decoded = fromEnglish16 (toEnglish16 n)
   in
     n == decoded
 
@@ -67,17 +67,17 @@ prop_Locator16 i =
 --
 -- Have to do these manually, since Locator16a is not round-trip safe.
 --
-testKnownLocator16a =
-    it "constrains Locator16a to unique digits" $ do
-        toLocator16a 6 0x111111 `shouldBe` "12C4FH"
-        toLocator16a 6 0x777777 `shouldBe` "789KLM"
-        toLocator16a 6 0xCCCCCC `shouldBe` "MRXY01"
+testKnownEnglish16a =
+    it "constrains English16a to unique digits" $ do
+        toEnglish16a 6 0x111111 `shouldBe` "12C4FH"
+        toEnglish16a 6 0x777777 `shouldBe` "789KLM"
+        toEnglish16a 6 0xCCCCCC `shouldBe` "MRXY01"
 
 testProblematicEdgeCases =
     it "converstion to Locator16a correct on corner cases" $ do
-        toLocator16a 6 0x0 `shouldBe` "012C4F"
-        hashStringToLocator16a 6 "perf_data" `shouldBe` "FHL417"
-        hashStringToLocator16a 6 "perf_data/bletchley" `shouldBe` "K48F01"
+        toEnglish16a 6 0x0 `shouldBe` "012C4F"
+        hashStringToEnglish16a 6 "perf_data" `shouldBe` "FHL417"
+        hashStringToEnglish16a 6 "perf_data/bletchley" `shouldBe` "K48F01"
 
 testPaddingRefactored =
     it "correctly pads strings" $ do

@@ -36,7 +36,6 @@ import Data.List (mapAccumL)
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Word
-import Numeric (showIntAtBase)
 
 class (Ord α, Enum α, Bounded α) => Locator α where
     locatorToDigit :: α -> Char
