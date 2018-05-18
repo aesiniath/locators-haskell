@@ -63,15 +63,15 @@ data Latin25
 --  | Oscar     -- Obvious conflict with 0
     | Papa      -- ^ @\'P\'@ /17th/
 --  | Quebec    -- The tail on Q is too easy to miss, thereby colliding with O/0
-    | Romeo     -- ^ @\'R\'@ /18th/
-    | Sierra    -- ^ @\'S\'@ /19th/
-    | Tango     -- ^ @\'T\'@ /20th/
+--  | Romeo     -- Dropped in favour of P
+    | Sierra    -- ^ @\'S\'@ /18th/
+    | Tango     -- ^ @\'T\'@ /19th/
 --  | Uniform   -- Too close to V
-    | Victor    -- ^ @\'V\'@ /21st/
-    | Whiskey   -- ^ @\'W\'@ /22nd/
-    | XRay      -- ^ @\'X\'@ /23rd/
-    | Yankee    -- ^ @\'Y\'@ /24th/
-    | Zulu      -- ^ @\'Z\'@ /25th/
+    | Victor    -- ^ @\'V\'@ /20th/
+    | Whiskey   -- ^ @\'W\'@ /21st/
+    | XRay      -- ^ @\'X\'@ /22nd/
+    | Yankee    -- ^ @\'Y\'@ /23rd/
+    | Zulu      -- ^ @\'Z\'@ /24th/
     deriving (Eq, Ord, Enum, Bounded)
 
 instance Locator Latin25 where
@@ -95,7 +95,6 @@ instance Locator Latin25 where
             Mike    -> 'M'
             November -> 'N'
             Papa    -> 'P'
-            Romeo   -> 'R'
             Sierra  -> 'S'
             Tango   -> 'T'
             Victor  -> 'V'
@@ -125,7 +124,6 @@ instance Locator Latin25 where
             'M' -> Mike
             'N' -> November
             'P' -> Papa
-            'R' -> Romeo
             'S' -> Sierra
             'T' -> Tango
             'W' -> Whiskey
@@ -150,7 +148,7 @@ instance Show Latin25 where
 --
 toLatin25 :: Int -> String
 toLatin25 x =
-    showIntAtBase 25 (represent Yankee) x ""
+    showIntAtBase 25 (represent Zulu) x ""
 
 --
 -- | Represent a number in Latin25a format. This uses the Latin25 symbol
@@ -221,7 +219,7 @@ hashStringToLatin25a limit s' =
     s  = S.unpack s'
     n  = digest s               -- SHA1 hash
     r  = mod n upperBound       -- trim to specified number of base 25 chars
-    x  = toLatin25a limit r   -- express in Latin25
+    x  = toLatin25a limit r     -- express in Latin25
     b' = S.pack x
   in
     b'

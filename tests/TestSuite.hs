@@ -22,7 +22,7 @@ import Test.Hspec.QuickCheck
 import Test.HUnit
 import Test.QuickCheck (elements, property)
 import Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
-
+import Debug.Trace
 
 --
 -- Otherwise redundent imports, but useful for testing in GHCi.
@@ -42,11 +42,15 @@ import Data.Locator
 
 suite :: Spec
 suite = do
-    describe "Locators" $ do
+    describe "Locators (English16)" $ do
         testRoundTripEnglish16
         testKnownEnglish16a
         testProblematicEdgeCases
         testNegativeNumbers
+
+    describe "Locators (Latin25)" $ do
+        testRoundTripLatin25
+        testKnownLatin25a
 
     describe "Hashes" $ do
         testPaddingRefactored
@@ -88,4 +92,29 @@ testPaddingRefactored =
 
 testNegativeNumbers =
     it "doesn't explode if fed a negative number" $ do
-        toLocator16a 1 (-1) `shouldBe` "1"
+        toEnglish16a 1 (-1) `shouldBe` "1"
+
+
+testRoundTripLatin25 =
+    prop "safe conversion to/from Latin25" prop_English16
+
+prop_Latin25 :: Int -> Bool
+prop_Latin25 i =
+  let
+    n = abs i
+    encoded = toLatin25 n
+    decoded = fromLatin25 encoded
+  in
+    n == decoded
+
+
+--
+-- Have to do these manually, since Locator16a is not round-trip safe.
+--
+testKnownLatin25a =
+    it "base case" $ do
+        toLatin25 0 `shouldBe` "0"
+        toLatin25 1 `shouldBe` "1"
+        toLatin25 24 `shouldBe` "Z"
+        toLatin25 25 `shouldBe` "10"
+
