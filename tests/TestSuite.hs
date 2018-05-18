@@ -49,8 +49,8 @@ suite = do
         testNegativeNumbers
 
     describe "Locators (Latin25)" $ do
+        testKnownLatin25
         testRoundTripLatin25
-        testKnownLatin25a
 
     describe "Hashes" $ do
         testPaddingRefactored
@@ -94,6 +94,12 @@ testNegativeNumbers =
     it "doesn't explode if fed a negative number" $ do
         toEnglish16a 1 (-1) `shouldBe` "1"
 
+testKnownLatin25 =
+    it "base 25 is correct" $ do
+        toLatin25 0 `shouldBe` "0"
+        toLatin25 1 `shouldBe` "1"
+        toLatin25 24 `shouldBe` "Z"
+        toLatin25 25 `shouldBe` "10"
 
 testRoundTripLatin25 =
     prop "safe conversion to/from Latin25" prop_English16
@@ -107,14 +113,7 @@ prop_Latin25 i =
   in
     n == decoded
 
-
---
--- Have to do these manually, since Locator16a is not round-trip safe.
---
 testKnownLatin25a =
-    it "base case" $ do
-        toLatin25 0 `shouldBe` "0"
-        toLatin25 1 `shouldBe` "1"
-        toLatin25 24 `shouldBe` "Z"
-        toLatin25 25 `shouldBe` "10"
+    it "constrains Latin25a to unique digits" $ do
+        toLatin25a 25 1 `shouldBe` "1034789ACEGHJKLMNPSTVWXYZ"
 
