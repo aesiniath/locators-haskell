@@ -1,7 +1,7 @@
 --
 -- Human exchangable identifiers and locators
 --
--- Copyright © 2013-2017 Operational Dynamics Consulting, Pty Ltd
+-- Copyright © 2013-2018 Operational Dynamics Consulting, Pty Ltd
 --
 -- The code in this file, and the program it is a part of, is
 -- made available to you by its authors as open source software:
@@ -22,7 +22,6 @@ import Test.Hspec.QuickCheck
 import Test.HUnit
 import Test.QuickCheck (elements, property)
 import Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
-import Debug.Trace
 
 --
 -- Otherwise redundent imports, but useful for testing in GHCi.
@@ -116,4 +115,5 @@ prop_Latin25 i =
 testKnownLatin25a =
     it "constrains Latin25a to unique digits" $ do
         toLatin25a 25 1 `shouldBe` "1034789ACEGHJKLMNPSTVWXYZ"
+        pure (toLatin25a 26 1) `shouldThrow` anyErrorCall
 

@@ -158,7 +158,7 @@ toLatin25 x =
 -- in the enum, in this case getting you \'9\' \'A\'.
 --
 -- Note that the transformation is /not/ reversible. A number like @4369@
--- (which is @0x1111@, incidentally) encodes as @12C4@. So do @4370@, @4371@,
+-- (which is @0x1111@, incidentally) encodes as @1345@. So do @4370@, @4371@,
 -- and @4372@. The point is not uniqueness, but readibility in adverse
 -- conditions. So while you can count locators, they don't map continuously to
 -- base10 integers.
@@ -166,11 +166,15 @@ toLatin25 x =
 -- The first argument is the number of digits you'd like in the locator; if the
 -- number passed in is less than 25^limit, then the result will be padded.
 --
--- >>> toEnglish25a 6 4369
--- FIXME
+-- >>> toEnglish25a 5 0xC0FFEE
+-- "J0MNL"
+--
+-- There are only 25 symbols available so you can't specify a limit > 25.
 --
 toLatin25a :: Int -> Int -> String
-toLatin25a limit n =
+toLatin25a limit n
+  | limit > 25 = error "'limit' too large. Max 25"
+  | otherwise  =
   let
     n' = abs n
     ls = convert n' (replicate limit minBound)       :: [Latin25]
