@@ -17,6 +17,7 @@
 
 module TestSuite where
 
+import Control.Exception (evaluate)
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.HUnit
@@ -46,10 +47,12 @@ suite = do
         testKnownEnglish16a
         testProblematicEdgeCases
         testNegativeNumbers
+        testWidthGuardsEnglish16a
 
     describe "Locators (Latin25)" $ do
         testKnownLatin25
         testRoundTripLatin25
+        testWidthGuardsLatin25a
 
     describe "Hashes" $ do
         testPaddingRefactored
@@ -115,5 +118,12 @@ prop_Latin25 i =
 testKnownLatin25a =
     it "constrains Latin25a to unique digits" $ do
         toLatin25a 25 1 `shouldBe` "1034789ACEGHJKLMNPSTVWXYZ"
-        pure (toLatin25a 26 1) `shouldThrow` anyErrorCall
+
+testWidthGuardsEnglish16a =
+    it "errors if asking for more than 16 English16a characters" $ do
+        evaluate (toEnglish16a 17 1) `shouldThrow` anyErrorCall
+
+testWidthGuardsLatin25a =
+    it "errors if asking for more than 25 Latin25a characters" $ do
+        evaluate (toLatin25a 26 1) `shouldThrow` anyErrorCall
 

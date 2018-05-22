@@ -173,7 +173,7 @@ toLatin25 x =
 --
 toLatin25a :: Int -> Int -> String
 toLatin25a limit n
-  | limit > 25 = error "'limit' too large. Max 25"
+  | limit > 25 = error "Can only request a maximum of 25 English25a characters, not " ++ (show limit)
   | otherwise  =
   let
     n' = abs n

@@ -186,7 +186,9 @@ toEnglish16 x =
 -- 12C40F
 --
 toEnglish16a :: Int -> Int -> String
-toEnglish16a limit n =
+toEnglish16a limit n
+  | limit > 16 = error "Can only request a maximum of 16 English16a characters, not " ++ (show limit)
+  | otherwise  =
   let
     n' = abs n
     ls = convert n' (replicate limit minBound)       :: [English16]
