@@ -29,7 +29,6 @@ module Data.Locator.Common
 import Prelude hiding (toInteger)
 
 import Crypto.Hash.SHA1 as Crypto
-import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as S
 import Data.List (mapAccumL)

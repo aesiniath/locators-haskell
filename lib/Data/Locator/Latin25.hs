@@ -33,104 +33,106 @@ import qualified Data.Set as Set
 import Numeric (showIntAtBase)
 
 import Data.Locator.Common
+{-
 
+    --  | Two       -- Obvious conflict with Z
+    --  | Five      -- Obvious conflict with S
+    --  | Six       -- Too close to G
+    --  | Bravo     -- Too close to 8
+    --  | Delta     -- Shape of D too close to O
+    --  | Foxtrot   -- A bit close to E, and since we've included S, skip
+    --  | India     -- Too close to 1 and J
+    --  | Oscar     -- Obvious conflict with 0
+    --  | Quebec    -- The tail on Q is too easy to miss, thereby colliding with O/0
+    --  | Romeo     -- Dropped in favour of P
+    --  | Uniform   -- Too close to V
+
+-}
 data Latin25
-    = Zero      -- ^ @\'0\'@ /0th/
-    | One       -- ^ @\'1\'@ /1st/
---  | Two       -- Obvious conflict with Z
-    | Three     -- ^ @\'3\'@ /2nd/
-    | Four      -- ^ @\'4\'@ /3rd/
---  | Five      -- Obvious conflict with S
---  | Six       -- Too close to G
-    | Seven     -- ^ @\'7\'@ /4th/
-    | Eight     -- ^ @\'8\'@ /5th/
-    | Nine      -- ^ @\'9\'@ /6th/
-
-    | Alpha     -- ^ @\'A\'@ /7th/
---  | Bravo     -- Too close to 8
-    | Charlie   -- ^ @\'C\'@ /8th/
---  | Delta     -- Shape of D too close to O
-    | Echo      -- ^ @\'E\'@ /9th/
---  | Foxtrot   -- A bit close to E, and since we've included S, skip
-    | Golf      -- ^ @\'G\'@ /10th/
-    | Hotel     -- ^ @\'H\'@ /11th/
---  | India     -- Too close to 1 and J
-    | Juliet    -- ^ @\'J\'@ /12th/
-    | Kilo      -- ^ @\'K\'@ /13th/
-    | Lima      -- ^ @\'L\'@ /14th/
-    | Mike      -- ^ @\'M\'@ /15th/
-    | November  -- ^ @\'N\'@ /16th/
---  | Oscar     -- Obvious conflict with 0
-    | Papa      -- ^ @\'P\'@ /17th/
---  | Quebec    -- The tail on Q is too easy to miss, thereby colliding with O/0
---  | Romeo     -- Dropped in favour of P
-    | Sierra    -- ^ @\'S\'@ /18th/
-    | Tango     -- ^ @\'T\'@ /19th/
---  | Uniform   -- Too close to V
-    | Victor    -- ^ @\'V\'@ /20th/
-    | Whiskey   -- ^ @\'W\'@ /21st/
-    | XRay      -- ^ @\'X\'@ /22nd/
-    | Yankee    -- ^ @\'Y\'@ /23rd/
-    | Zulu      -- ^ @\'Z\'@ /24th/
+    = Zero_     -- ^ @\'0\'@ /0th/
+    | One_      -- ^ @\'1\'@ /1st/
+    | Three_    -- ^ @\'3\'@ /2nd/
+    | Four_     -- ^ @\'4\'@ /3rd/
+    | Seven_    -- ^ @\'7\'@ /4th/
+    | Eight_    -- ^ @\'8\'@ /5th/
+    | Nine_     -- ^ @\'9\'@ /6th/
+    | Alpha_    -- ^ @\'A\'@ /7th/
+    | Charlie_  -- ^ @\'C\'@ /8th/
+    | Echo_     -- ^ @\'E\'@ /9th/
+    | Golf_     -- ^ @\'G\'@ /10th/
+    | Hotel_    -- ^ @\'H\'@ /11th/
+    | Juliet_   -- ^ @\'J\'@ /12th/
+    | Kilo_     -- ^ @\'K\'@ /13th/
+    | Lima_     -- ^ @\'L\'@ /14th/
+    | Mike_     -- ^ @\'M\'@ /15th/
+    | November_ -- ^ @\'N\'@ /16th/
+    | Papa_     -- ^ @\'P\'@ /17th/
+    | Sierra_   -- ^ @\'S\'@ /18th/
+    | Tango_    -- ^ @\'T\'@ /19th/
+    | Victor_   -- ^ @\'V\'@ /20th/
+    | Whiskey_  -- ^ @\'W\'@ /21st/
+    | XRay_     -- ^ @\'X\'@ /22nd/
+    | Yankee_   -- ^ @\'Y\'@ /23rd/
+    | Zulu_     -- ^ @\'Z\'@ /24th/
     deriving (Eq, Ord, Enum, Bounded)
 
 instance Locator Latin25 where
     locatorToDigit x =
         case x of
-            Zero    -> '0'
-            One     -> '1'
-            Three   -> '3'
-            Four    -> '4'
-            Seven   -> '7'
-            Eight   -> '8'
-            Nine    -> '9'
-            Alpha   -> 'A'
-            Charlie -> 'C'
-            Echo    -> 'E'
-            Golf    -> 'G'
-            Hotel   -> 'H'
-            Juliet  -> 'J'
-            Kilo    -> 'K'
-            Lima    -> 'L'
-            Mike    -> 'M'
-            November -> 'N'
-            Papa    -> 'P'
-            Sierra  -> 'S'
-            Tango   -> 'T'
-            Victor  -> 'V'
-            Whiskey -> 'W'
-            XRay    -> 'X'
-            Yankee  -> 'Y'
-            Zulu    -> 'Z'
+            Zero_   -> '0'
+            One_    -> '1'
+            Three_  -> '3'
+            Four_   -> '4'
+            Seven_  -> '7'
+            Eight_  -> '8'
+            Nine_   -> '9'
+            Alpha_  -> 'A'
+            Charlie_ -> 'C'
+            Echo_   -> 'E'
+            Golf_   -> 'G'
+            Hotel_  -> 'H'
+            Juliet_ -> 'J'
+            Kilo_   -> 'K'
+            Lima_   -> 'L'
+            Mike_   -> 'M'
+            November_ -> 'N'
+            Papa_   -> 'P'
+            Sierra_ -> 'S'
+            Tango_  -> 'T'
+            Victor_ -> 'V'
+            Whiskey_-> 'W'
+            XRay_   -> 'X'
+            Yankee_ -> 'Y'
+            Zulu_   -> 'Z'
 
     digitToLocator :: Char -> Latin25
     digitToLocator c =
         case c of
-            '0' -> Zero
-            '1' -> One
-            '3' -> Three
-            '4' -> Four
-            '7' -> Seven
-            '8' -> Eight
-            '9' -> Nine
-            'A' -> Alpha
-            'C' -> Charlie
-            'E' -> Echo
-            'G' -> Golf
-            'H' -> Hotel
-            'J' -> Juliet
-            'K' -> Kilo
-            'L' -> Lima
-            'M' -> Mike
-            'N' -> November
-            'P' -> Papa
-            'S' -> Sierra
-            'T' -> Tango
-            'W' -> Whiskey
-            'V' -> Victor
-            'X' -> XRay
-            'Y' -> Yankee
-            'Z' -> Zulu
+            '0' -> Zero_
+            '1' -> One_
+            '3' -> Three_
+            '4' -> Four_
+            '7' -> Seven_
+            '8' -> Eight_
+            '9' -> Nine_
+            'A' -> Alpha_
+            'C' -> Charlie_
+            'E' -> Echo_
+            'G' -> Golf_
+            'H' -> Hotel_
+            'J' -> Juliet_
+            'K' -> Kilo_
+            'L' -> Lima_
+            'M' -> Mike_
+            'N' -> November_
+            'P' -> Papa_
+            'S' -> Sierra_
+            'T' -> Tango_
+            'W' -> Whiskey_
+            'V' -> Victor_
+            'X' -> XRay_
+            'Y' -> Yankee_
+            'Z' -> Zulu_
             _   -> error "Illegal digit"
 
 
@@ -148,7 +150,7 @@ instance Show Latin25 where
 --
 toLatin25 :: Int -> String
 toLatin25 x =
-    showIntAtBase 25 (represent Zulu) x ""
+    showIntAtBase 25 (represent Zulu_) x ""
 
 --
 -- | Represent a number in Latin25a format. This uses the Latin25 symbol
@@ -166,8 +168,8 @@ toLatin25 x =
 -- The first argument is the number of digits you'd like in the locator; if the
 -- number passed in is less than 25^limit, then the result will be padded.
 --
--- >>> toEnglish25a 5 0xC0FFEE
--- "J0MNL"
+-- >>> toLatin25a 5 9999
+-- "3A0M1"
 --
 -- There are only 25 symbols available so you can't specify a limit > 25.
 --
@@ -208,7 +210,7 @@ toLatin25a limit n
 --
 fromLatin25 :: String -> Int
 fromLatin25 ss =
-    foldl (multiply Zulu) 0 ss
+    foldl (multiply Zulu_) 0 ss
 
 --
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a

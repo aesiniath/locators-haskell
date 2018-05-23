@@ -33,17 +33,26 @@
 --
 -- So what we need is a symbol set where each digit is unambigious and doesn't
 -- collide with the phonetics of another symbol. This package provides
--- Locator16, a set of 16 letters and numbers that, when spoken in English,
--- have unique pronounciation.
+-- 'English16', a set of 16 letters and numbers that, when spoken in /English/,
+-- have unique pronounciation and have been very successful in verbal
+-- communications over noisy links.
 --
--- Also included is code to work in base 62, which is simply @[\'0\'@-@\'9\'@,
--- @\'A\'@-@\'Z\'@, and @\'a\'@-@\'z\']@. These are frequently used to express
--- short codes in URL redirectors; you may find them a more useful encoding for
--- expressing numbers than base 16 hexidecimal.
+-- Ironically, however, when used in written applications the English16 set is
+-- a bit restrictive. When /looking/ at them they don't have much variety (it
+-- turned out they're very blocky—so much so you have to squint). If the
+-- application is transcription or identification visually then the criteria is
+-- shapes that are distinct, rather than their sound. For these uses we provide
+-- 'Latin25', a set of 25 symbols useful for identifiers in automated systems
+-- that nevertheless have to be operated or debugged by humans.
+--
+-- Finally, also included is code to work in base 62, which is simply
+-- @[\'0\'@-@\'9\'@, @\'A\'@-@\'Z\'@, and @\'a\'@-@\'z\']@. These are
+-- frequently used to express short codes in URL redirectors; you may find them
+-- a more useful encoding for expressing numbers than base 16 hexidecimal.
 --
 module Data.Locator
 (
-    -- * Locator English16
+    -- * English16: locators humans can exchange
     -- | This was somewhat inspired by the record locators used by the civilian
     -- air travel industry, but with the restriction that the symbol set is
     -- carefully chosen (aviation locators do heroic things like excluding
@@ -60,18 +69,22 @@ module Data.Locator
   , toEnglish16a
   , hashStringToEnglish16a
 
+    -- * Latin25: a visually distinct character set
+    -- An althernate character set chosen for visual distinctiveness (rather
+    -- than the aural distinctiveness goal of "English16").
+  , Latin25(..)
   , fromLatin25
   , toLatin25
   , toLatin25a
   , hashStringToLatin25a
 
-    -- * Base62
+    -- * Base62: binary without punctuation
   , toBase62
   , fromBase62
   , padWithZeros
   , hashStringToBase62
 
-    -- * Deprecated
+    -- * Deprecated functions
   , fromLocator16
   , toLocator16
   , toLocator16a
