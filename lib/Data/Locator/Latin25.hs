@@ -18,9 +18,8 @@
 module Data.Locator.Latin25
   ( Latin25(..)
   , toLatin25
-  , toLatin25a
   , fromLatin25
-  , hashStringToLatin25a
+  , hashStringToLatin25
   ) where
 
 import Prelude hiding (toInteger)
@@ -40,8 +39,6 @@ import Data.Locator.Common
 -- These are not protected against similar pronounciations; if you need to
 -- read your identifiers /aloud/ use 'English16' instead.
 --
-
-
 {-
 
     --  | Two       -- Obvious conflict with Z
@@ -160,58 +157,6 @@ toLatin25 x =
     showIntAtBase 25 (represent Zulu') x ""
 
 --
--- | Represent a number in Latin25a format. This uses the Latin25 symbol
--- set, and additionally specifies that no symbol can be repeated. The /a/ in
--- Latin25a represents that this transformation is done on the cheap; when
--- converting if we end up with \'P\' \'P\' we simply pick the subsequent digit
--- in the enum, in this case getting you \'P\' \'S\'.
---
--- Note that the transformation is /not/ reversible. A number like @5068@
--- encodes as @14JK@. So does @5069@.  The point is not uniqueness, but
--- uniqueness in adverse conditions. So while you can count locators, they
--- don't map continuously to base10 integers.
---
--- The first argument is the number of digits you'd like in the locator; if the
--- number passed in is less than 25^limit, then the result will be padded.
---
--- >>> toLatin25a 5 9999
--- "3A0M1"
---
--- There are only 25 symbols available so you can't specify a limit > 25.
---
-toLatin25a :: Int -> Int -> String
-toLatin25a limit n
-  | limit > 25 = error "Can only request a maximum of 25 English25a characters, not " ++ (show limit)
-  | otherwise  =
-  let
-    n' = abs n
-    ls = convert n' (replicate limit minBound)       :: [Latin25]
-    (_,us) = mapAccumL uniq Set.empty ls
-  in
-    map locatorToDigit (take limit us)
-  where
-    convert :: Locator α => Int -> [α] -> [α]
-    convert 0 xs = xs
-    convert i xs =
-      let
-        (d,r) = divMod i 16
-        x = toEnum r
-      in
-        convert d (x:xs)
-
-    uniq :: Locator α => Set α -> α -> (Set α, α)
-    uniq s x =
-        if Set.member x s
-            then uniq s (subsequent x)
-            else (Set.insert x s, x)
-
-    subsequent :: Locator α => α -> α
-    subsequent x =
-        if x == maxBound
-            then minBound
-            else succ x
-
---
 -- | Given a number encoded in Locator16, convert it back to an integer.
 --
 fromLatin25 :: String -> Int
@@ -220,21 +165,24 @@ fromLatin25 ss =
 
 --
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
--- short @digits@-long English25 string.
+-- short @limit@-long Latin25 string.
 --
--- >>> hashStringToLatin25a 6 "Hello World"
+-- >>> hashStringToLatin25 6 "Hello World"
 -- M48HR0
 --
-hashStringToLatin25a :: Int -> ByteString -> ByteString
-hashStringToLatin25a limit s' =
+hashStringToLatin25 :: Int -> ByteString -> ByteString
+hashStringToLatin25 limit s' =
   let
     s  = S.unpack s'
     n  = digest s               -- SHA1 hash
     r  = mod n upperBound       -- trim to specified number of base 25 chars
-    x  = toLatin25a limit r     -- express in Latin25
+    x  = toLatin25 r            -- express in Latin25
     b' = S.pack x
   in
     b'
   where
     upperBound = 25 ^ limit
-
+{-
+    ls = convert n' (replicate limit minBound)       :: [English16]
+    (_,us) = mapAccumL uniq Set.empty ls
+-}

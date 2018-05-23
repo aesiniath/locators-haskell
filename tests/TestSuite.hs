@@ -52,7 +52,7 @@ suite = do
     describe "Locators (Latin25)" $ do
         testKnownLatin25
         testRoundTripLatin25
-        testWidthGuardsLatin25a
+        testHashLatin25
 
     describe "Hashes" $ do
         testPaddingRefactored
@@ -115,15 +115,11 @@ prop_Latin25 i =
   in
     n == decoded
 
-testKnownLatin25a =
-    it "constrains Latin25a to unique digits" $ do
-        toLatin25a 25 1 `shouldBe` "1034789ACEGHJKLMNPSTVWXYZ"
+testHashLatin25 =
+    it "hashToLatin25 generates an appropriate hash" $ do
+        hashStringToLatin25 5 "You'll get used to it. Or, you'll have a psychotic episode"
+            `shouldBe` "XSAV1"
 
 testWidthGuardsEnglish16a =
     it "errors if asking for more than 16 English16a characters" $ do
         evaluate (toEnglish16a 17 1) `shouldThrow` anyErrorCall
-
-testWidthGuardsLatin25a =
-    it "errors if asking for more than 25 Latin25a characters" $ do
-        evaluate (toLatin25a 26 1) `shouldThrow` anyErrorCall
-

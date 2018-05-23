@@ -75,8 +75,7 @@ module Data.Locator
   , Latin25(..)
   , fromLatin25
   , toLatin25
-  , toLatin25a
-  , hashStringToLatin25a
+  , hashStringToLatin25
 
     -- * Base62: binary without punctuation
   , toBase62
