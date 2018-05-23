@@ -33,6 +33,15 @@ import qualified Data.Set as Set
 import Numeric (showIntAtBase)
 
 import Data.Locator.Common
+
+--
+-- | A symbol set with twenty-five visually distinct characters.
+--
+-- These are not protected against similar pronounciations; if you need to
+-- read your identifiers /aloud/ use 'English16' instead.
+--
+
+
 {-
 
     --  | Two       -- Obvious conflict with Z
@@ -49,90 +58,90 @@ import Data.Locator.Common
 
 -}
 data Latin25
-    = Zero_     -- ^ @\'0\'@ /0th/
-    | One_      -- ^ @\'1\'@ /1st/
-    | Three_    -- ^ @\'3\'@ /2nd/
-    | Four_     -- ^ @\'4\'@ /3rd/
-    | Seven_    -- ^ @\'7\'@ /4th/
-    | Eight_    -- ^ @\'8\'@ /5th/
-    | Nine_     -- ^ @\'9\'@ /6th/
-    | Alpha_    -- ^ @\'A\'@ /7th/
-    | Charlie_  -- ^ @\'C\'@ /8th/
-    | Echo_     -- ^ @\'E\'@ /9th/
-    | Golf_     -- ^ @\'G\'@ /10th/
-    | Hotel_    -- ^ @\'H\'@ /11th/
-    | Juliet_   -- ^ @\'J\'@ /12th/
-    | Kilo_     -- ^ @\'K\'@ /13th/
-    | Lima_     -- ^ @\'L\'@ /14th/
-    | Mike_     -- ^ @\'M\'@ /15th/
-    | November_ -- ^ @\'N\'@ /16th/
-    | Papa_     -- ^ @\'P\'@ /17th/
-    | Sierra_   -- ^ @\'S\'@ /18th/
-    | Tango_    -- ^ @\'T\'@ /19th/
-    | Victor_   -- ^ @\'V\'@ /20th/
-    | Whiskey_  -- ^ @\'W\'@ /21st/
-    | XRay_     -- ^ @\'X\'@ /22nd/
-    | Yankee_   -- ^ @\'Y\'@ /23rd/
-    | Zulu_     -- ^ @\'Z\'@ /24th/
+    = Zero'     -- ^ @\'0\'@ /0th/
+    | One'      -- ^ @\'1\'@ /1st/
+    | Three'    -- ^ @\'3\'@ /2nd/
+    | Four'     -- ^ @\'4\'@ /3rd/
+    | Seven'    -- ^ @\'7\'@ /4th/
+    | Eight'    -- ^ @\'8\'@ /5th/
+    | Nine'     -- ^ @\'9\'@ /6th/
+    | Alpha'    -- ^ @\'A\'@ /7th/
+    | Charlie'  -- ^ @\'C\'@ /8th/
+    | Echo'     -- ^ @\'E\'@ /9th/
+    | Golf'     -- ^ @\'G\'@ /10th/
+    | Hotel'    -- ^ @\'H\'@ /11th/
+    | Juliet'   -- ^ @\'J\'@ /12th/
+    | Kilo'     -- ^ @\'K\'@ /13th/
+    | Lima'     -- ^ @\'L\'@ /14th/
+    | Mike'     -- ^ @\'M\'@ /15th/
+    | November' -- ^ @\'N\'@ /16th/
+    | Papa'     -- ^ @\'P\'@ /17th/
+    | Sierra'   -- ^ @\'S\'@ /18th/
+    | Tango'    -- ^ @\'T\'@ /19th/
+    | Victor'   -- ^ @\'V\'@ /20th/
+    | Whiskey'  -- ^ @\'W\'@ /21st/
+    | XRay'     -- ^ @\'X\'@ /22nd/
+    | Yankee'   -- ^ @\'Y\'@ /23rd/
+    | Zulu'     -- ^ @\'Z\'@ /24th/
     deriving (Eq, Ord, Enum, Bounded)
 
 instance Locator Latin25 where
     locatorToDigit x =
         case x of
-            Zero_   -> '0'
-            One_    -> '1'
-            Three_  -> '3'
-            Four_   -> '4'
-            Seven_  -> '7'
-            Eight_  -> '8'
-            Nine_   -> '9'
-            Alpha_  -> 'A'
-            Charlie_ -> 'C'
-            Echo_   -> 'E'
-            Golf_   -> 'G'
-            Hotel_  -> 'H'
-            Juliet_ -> 'J'
-            Kilo_   -> 'K'
-            Lima_   -> 'L'
-            Mike_   -> 'M'
-            November_ -> 'N'
-            Papa_   -> 'P'
-            Sierra_ -> 'S'
-            Tango_  -> 'T'
-            Victor_ -> 'V'
-            Whiskey_-> 'W'
-            XRay_   -> 'X'
-            Yankee_ -> 'Y'
-            Zulu_   -> 'Z'
+            Zero'   -> '0'
+            One'    -> '1'
+            Three'  -> '3'
+            Four'   -> '4'
+            Seven'  -> '7'
+            Eight'  -> '8'
+            Nine'   -> '9'
+            Alpha'  -> 'A'
+            Charlie' -> 'C'
+            Echo'   -> 'E'
+            Golf'   -> 'G'
+            Hotel'  -> 'H'
+            Juliet' -> 'J'
+            Kilo'   -> 'K'
+            Lima'   -> 'L'
+            Mike'   -> 'M'
+            November' -> 'N'
+            Papa'   -> 'P'
+            Sierra' -> 'S'
+            Tango'  -> 'T'
+            Victor' -> 'V'
+            Whiskey'-> 'W'
+            XRay'   -> 'X'
+            Yankee' -> 'Y'
+            Zulu'   -> 'Z'
 
     digitToLocator :: Char -> Latin25
     digitToLocator c =
         case c of
-            '0' -> Zero_
-            '1' -> One_
-            '3' -> Three_
-            '4' -> Four_
-            '7' -> Seven_
-            '8' -> Eight_
-            '9' -> Nine_
-            'A' -> Alpha_
-            'C' -> Charlie_
-            'E' -> Echo_
-            'G' -> Golf_
-            'H' -> Hotel_
-            'J' -> Juliet_
-            'K' -> Kilo_
-            'L' -> Lima_
-            'M' -> Mike_
-            'N' -> November_
-            'P' -> Papa_
-            'S' -> Sierra_
-            'T' -> Tango_
-            'W' -> Whiskey_
-            'V' -> Victor_
-            'X' -> XRay_
-            'Y' -> Yankee_
-            'Z' -> Zulu_
+            '0' -> Zero'
+            '1' -> One'
+            '3' -> Three'
+            '4' -> Four'
+            '7' -> Seven'
+            '8' -> Eight'
+            '9' -> Nine'
+            'A' -> Alpha'
+            'C' -> Charlie'
+            'E' -> Echo'
+            'G' -> Golf'
+            'H' -> Hotel'
+            'J' -> Juliet'
+            'K' -> Kilo'
+            'L' -> Lima'
+            'M' -> Mike'
+            'N' -> November'
+            'P' -> Papa'
+            'S' -> Sierra'
+            'T' -> Tango'
+            'W' -> Whiskey'
+            'V' -> Victor'
+            'X' -> XRay'
+            'Y' -> Yankee'
+            'Z' -> Zulu'
             _   -> error "Illegal digit"
 
 
@@ -142,28 +151,25 @@ instance Show Latin25 where
         c = locatorToDigit x
 
 --
--- | Given a number, convert it to a string in the Locator16 base 16 symbol
--- alphabet. You can use this as a replacement for the standard \'0\'-\'9\'
--- \'A\'-\'F\' symbols traditionally used to express hexidemimal, though really
--- the fact that we came up with 16 total unique symbols was a nice
--- co-incidence, not a requirement.
+-- | Given a number, convert it to a string in the Latin25 base 25 symbol
+-- alphabet. This is useful for primary keys and object identifiers that you
+-- need to scan for in log output, for example.
 --
 toLatin25 :: Int -> String
 toLatin25 x =
-    showIntAtBase 25 (represent Zulu_) x ""
+    showIntAtBase 25 (represent Zulu') x ""
 
 --
 -- | Represent a number in Latin25a format. This uses the Latin25 symbol
 -- set, and additionally specifies that no symbol can be repeated. The /a/ in
 -- Latin25a represents that this transformation is done on the cheap; when
--- converting if we end up with \'9\' \'9\' we simply pick the subsequent digit
--- in the enum, in this case getting you \'9\' \'A\'.
+-- converting if we end up with \'P\' \'P\' we simply pick the subsequent digit
+-- in the enum, in this case getting you \'P\' \'S\'.
 --
--- Note that the transformation is /not/ reversible. A number like @4369@
--- (which is @0x1111@, incidentally) encodes as @1345@. So do @4370@, @4371@,
--- and @4372@. The point is not uniqueness, but readibility in adverse
--- conditions. So while you can count locators, they don't map continuously to
--- base10 integers.
+-- Note that the transformation is /not/ reversible. A number like @5068@
+-- encodes as @14JK@. So does @5069@.  The point is not uniqueness, but
+-- uniqueness in adverse conditions. So while you can count locators, they
+-- don't map continuously to base10 integers.
 --
 -- The first argument is the number of digits you'd like in the locator; if the
 -- number passed in is less than 25^limit, then the result will be padded.
@@ -210,7 +216,7 @@ toLatin25a limit n
 --
 fromLatin25 :: String -> Int
 fromLatin25 ss =
-    foldl (multiply Zulu_) 0 ss
+    foldl (multiply Zulu') 0 ss
 
 --
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a

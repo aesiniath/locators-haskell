@@ -156,7 +156,7 @@ instance Show English16 where
         c = locatorToDigit x
 
 --
--- | Given a number, convert it to a string in the Locator16 base 16 symbol
+-- | Given a number, convert it to a string in the English16 base 16 symbol
 -- alphabet. You can use this as a replacement for the standard \'0\'-\'9\'
 -- \'A\'-\'F\' symbols traditionally used to express hexidemimal, though really
 -- the fact that we came up with 16 total unique symbols was a nice
@@ -167,7 +167,7 @@ toEnglish16 x =
     showIntAtBase 16 (represent Yankee) x ""
 
 --
--- | Represent a number in Locator16a format. This uses the Locator16 symbol
+-- | Represent a number in English16a format. This uses the Locator16 symbol
 -- set, and additionally specifies that no symbol can be repeated. The /a/ in
 -- Locator16a represents that this transformation is done on the cheap; when
 -- converting if we end up with \'9\' \'9\' we simply pick the subsequent digit
@@ -182,7 +182,7 @@ toEnglish16 x =
 -- The first argument is the number of digits you'd like in the locator; if the
 -- number passed in is less than 16^limit, then the result will be padded.
 --
--- >>> toLocator16a 6 4369
+-- >>> toEnglish16a 6 4369
 -- 12C40F
 --
 toEnglish16a :: Int -> Int -> String
