@@ -53,6 +53,7 @@ suite = do
         testKnownLatin25
         testRoundTripLatin25
         testHashLatin25
+        testWidthGuardsHashing
 
     describe "Hashes" $ do
         testPaddingRefactored
@@ -123,3 +124,8 @@ testHashLatin25 =
 testWidthGuardsEnglish16a =
     it "errors if asking for more than 16 English16a characters" $ do
         evaluate (toEnglish16a 17 1) `shouldThrow` anyErrorCall
+
+testWidthGuardsHashing =
+    it "errors if asking for more than 17 hash digits" $ do
+        S.length (hashStringToLatin25 17 "a") `shouldBe` 17
+        evaluate (hashStringToLatin25 18 "a") `shouldThrow` anyErrorCall

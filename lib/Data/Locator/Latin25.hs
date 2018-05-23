@@ -26,12 +26,10 @@ import Prelude hiding (toInteger)
 
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as S
-import Data.List (mapAccumL)
-import Data.Set (Set)
-import qualified Data.Set as Set
 import Numeric (showIntAtBase)
 
 import Data.Locator.Common
+import Data.Locator.Hashes (padWithZeros)
 
 --
 -- | A symbol set with twenty-five visually distinct characters.
@@ -167,22 +165,22 @@ fromLatin25 ss =
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
 -- short @limit@-long Latin25 string.
 --
--- >>> hashStringToLatin25 6 "Hello World"
--- M48HR0
+-- >>> hashStringToLatin25 5 "You'll get used to it. Or, you'll have a psychotic episode"
+-- XSAV1
+--
+-- 17 characters is the widest hash you can request.
 --
 hashStringToLatin25 :: Int -> ByteString -> ByteString
-hashStringToLatin25 limit s' =
+hashStringToLatin25 limit s'
+  | limit > 17 = error "Can only request a maximum width of 17, sorry"
+  | otherwise  =
   let
     s  = S.unpack s'
     n  = digest s               -- SHA1 hash
     r  = mod n upperBound       -- trim to specified number of base 25 chars
     x  = toLatin25 r            -- express in Latin25
-    b' = S.pack x
+    b' = S.pack (padWithZeros limit x)
   in
     b'
   where
     upperBound = 25 ^ limit
-{-
-    ls = convert n' (replicate limit minBound)       :: [English16]
-    (_,us) = mapAccumL uniq Set.empty ls
--}
