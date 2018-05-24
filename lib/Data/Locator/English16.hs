@@ -1,7 +1,7 @@
 --
 -- Human exchangable identifiers and locators
 --
--- Copyright © 2011-2017 Operational Dynamics Consulting, Pty Ltd
+-- Copyright © 2011-2018 Operational Dynamics Consulting, Pty Ltd
 --
 -- The code in this file, and the program it is a part of, is
 -- made available to you by its authors as open source software:
@@ -13,10 +13,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE TypeApplications #-}
 
-module Data.Locator.Locators
+module Data.Locator.English16
   ( Locator(..)
   , English16(..)
+  , fromEnglish16
+  , toEnglish16
+  , toEnglish16a
+  , hashStringToEnglish16a
+
+    -- Deprecated
   , fromLocator16
   , toLocator16
   , toLocator16a
@@ -25,16 +32,14 @@ module Data.Locator.Locators
 
 import Prelude hiding (toInteger)
 
-import Crypto.Hash.SHA1 as Crypto
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as S
 import Data.List (mapAccumL)
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.Word
 import Numeric (showIntAtBase)
 
+import Data.Locator.Common
 
 --
 -- | A symbol set with sixteen uniquely pronounceable digits.
@@ -103,12 +108,6 @@ data English16
     | Yankee    -- ^ @\'Y\'@ /15th/
     deriving (Eq, Ord, Enum, Bounded)
 
-
-class (Ord α, Enum α, Bounded α) => Locator α where
-    locatorToDigit :: α -> Char
-    digitToLocator :: Char -> α
-
-
 instance Locator English16 where
     locatorToDigit :: English16 -> Char
     locatorToDigit x =
@@ -151,33 +150,24 @@ instance Locator English16 where
             'Y' -> Yankee
             _   -> error "Illegal digit"
 
-
-represent :: Int -> Char
-represent n =
-    locatorToDigit $ (toEnum n :: English16)    -- FIXME
-
 instance Show English16 where
     show x = [c]
       where
         c = locatorToDigit x
 
-value :: Char -> Int
-value c =
-    fromEnum $ (digitToLocator c :: English16)  -- FIXME
-
 --
--- | Given a number, convert it to a string in the Locator16 base 16 symbol
+-- | Given a number, convert it to a string in the English16 base 16 symbol
 -- alphabet. You can use this as a replacement for the standard \'0\'-\'9\'
 -- \'A\'-\'F\' symbols traditionally used to express hexidemimal, though really
 -- the fact that we came up with 16 total unique symbols was a nice
 -- co-incidence, not a requirement.
 --
-toLocator16 :: Int -> String
-toLocator16 x =
-    showIntAtBase 16 represent x ""
+toEnglish16 :: Int -> String
+toEnglish16 x =
+    showIntAtBase 16 (represent Yankee) x ""
 
 --
--- | Represent a number in Locator16a format. This uses the Locator16 symbol
+-- | Represent a number in English16a format. This uses the Locator16 symbol
 -- set, and additionally specifies that no symbol can be repeated. The /a/ in
 -- Locator16a represents that this transformation is done on the cheap; when
 -- converting if we end up with \'9\' \'9\' we simply pick the subsequent digit
@@ -192,11 +182,13 @@ toLocator16 x =
 -- The first argument is the number of digits you'd like in the locator; if the
 -- number passed in is less than 16^limit, then the result will be padded.
 --
--- >>> toLocator16a 6 4369
+-- >>> toEnglish16a 6 4369
 -- 12C40F
 --
-toLocator16a :: Int -> Int -> String
-toLocator16a limit n =
+toEnglish16a :: Int -> Int -> String
+toEnglish16a limit n
+  | limit > 16 = error "Can only request a maximum of 16 English16a characters, not " ++ (show limit)
+  | otherwise  =
   let
     n' = abs n
     ls = convert n' (replicate limit minBound)       :: [English16]
@@ -225,34 +217,12 @@ toLocator16a limit n =
             then minBound
             else succ x
 
-multiply :: Int -> Char -> Int
-multiply acc c =
-    acc * 16 + value c
-
 --
 -- | Given a number encoded in Locator16, convert it back to an integer.
 --
-fromLocator16 :: String -> Int
-fromLocator16 ss =
-    foldl multiply 0 ss
-
---
--- Given a string, convert it into a N character hash.
---
-concatToInteger :: [Word8] -> Int
-concatToInteger bytes =
-    foldl fn 0 bytes
-  where
-    fn acc b = (acc * 256) + (fromIntegral b)
-
-digest :: String -> Int
-digest ws =
-    i
-  where
-    i  = concatToInteger h
-    h  = B.unpack h'
-    h' = Crypto.hash x'
-    x' = S.pack ws
+fromEnglish16 :: [Char] -> Int
+fromEnglish16 ss =
+    foldl (multiply Yankee) 0 ss
 
 --
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
@@ -261,8 +231,8 @@ digest ws =
 -- >>> hashStringToLocator16a 6 "Hello World"
 -- M48HR0
 --
-hashStringToLocator16a :: Int -> ByteString -> ByteString
-hashStringToLocator16a limit s' =
+hashStringToEnglish16a :: Int -> ByteString -> ByteString
+hashStringToEnglish16a limit s' =
   let
     s  = S.unpack s'
     n  = digest s               -- SHA1 hash
@@ -274,3 +244,20 @@ hashStringToLocator16a limit s' =
   where
     upperBound = 16 ^ limit
 
+
+toLocator16 :: Int -> String
+toLocator16 = toEnglish16
+{-# DEPRECATED toLocator16 "Use toEnglish16 instead" #-}
+
+toLocator16a :: Int -> Int -> String
+toLocator16a = toEnglish16a
+{-# DEPRECATED toLocator16a "Use toEnglish16a instead" #-}
+
+fromLocator16 :: [Char] -> Int
+fromLocator16 = fromEnglish16
+{-# DEPRECATED fromLocator16 "Use fromEnglish16 instead" #-}
+
+
+hashStringToLocator16a :: Int -> ByteString -> ByteString
+hashStringToLocator16a = hashStringToEnglish16a
+{-# DEPRECATED hashStringToLocator16a "Use hashStringToEnglish16a instead" #-}

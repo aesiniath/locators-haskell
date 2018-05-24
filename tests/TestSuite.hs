@@ -1,7 +1,7 @@
 --
 -- Human exchangable identifiers and locators
 --
--- Copyright © 2013-2017 Operational Dynamics Consulting, Pty Ltd
+-- Copyright © 2013-2018 Operational Dynamics Consulting, Pty Ltd
 --
 -- The code in this file, and the program it is a part of, is
 -- made available to you by its authors as open source software:
@@ -17,12 +17,12 @@
 
 module TestSuite where
 
+import Control.Exception (evaluate)
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.HUnit
 import Test.QuickCheck (elements, property)
 import Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
-
 
 --
 -- Otherwise redundent imports, but useful for testing in GHCi.
@@ -42,24 +42,31 @@ import Data.Locator
 
 suite :: Spec
 suite = do
-    describe "Locators" $ do
-        testRoundTripLocator16
-        testKnownLocator16a
+    describe "Locators (English16)" $ do
+        testRoundTripEnglish16
+        testKnownEnglish16a
         testProblematicEdgeCases
         testNegativeNumbers
+        testWidthGuardsEnglish16a
+
+    describe "Locators (Latin25)" $ do
+        testKnownLatin25
+        testRoundTripLatin25
+        testHashLatin25
+        testWidthGuardsHashing
 
     describe "Hashes" $ do
         testPaddingRefactored
 
 
-testRoundTripLocator16 =
-    prop "safe conversion to/from Locator16" prop_Locator16
+testRoundTripEnglish16 =
+    prop "safe conversion to/from English16" prop_English16
 
-prop_Locator16 :: Int -> Bool
-prop_Locator16 i =
+prop_English16 :: Int -> Bool
+prop_English16 i =
   let
     n = abs i
-    decoded = fromLocator16 (toLocator16 n)
+    decoded = fromEnglish16 (toEnglish16 n)
   in
     n == decoded
 
@@ -67,17 +74,17 @@ prop_Locator16 i =
 --
 -- Have to do these manually, since Locator16a is not round-trip safe.
 --
-testKnownLocator16a =
-    it "constrains Locator16a to unique digits" $ do
-        toLocator16a 6 0x111111 `shouldBe` "12C4FH"
-        toLocator16a 6 0x777777 `shouldBe` "789KLM"
-        toLocator16a 6 0xCCCCCC `shouldBe` "MRXY01"
+testKnownEnglish16a =
+    it "constrains English16a to unique digits" $ do
+        toEnglish16a 6 0x111111 `shouldBe` "12C4FH"
+        toEnglish16a 6 0x777777 `shouldBe` "789KLM"
+        toEnglish16a 6 0xCCCCCC `shouldBe` "MRXY01"
 
 testProblematicEdgeCases =
     it "converstion to Locator16a correct on corner cases" $ do
-        toLocator16a 6 0x0 `shouldBe` "012C4F"
-        hashStringToLocator16a 6 "perf_data" `shouldBe` "FHL417"
-        hashStringToLocator16a 6 "perf_data/bletchley" `shouldBe` "K48F01"
+        toEnglish16a 6 0x0 `shouldBe` "012C4F"
+        hashStringToEnglish16a 6 "perf_data" `shouldBe` "FHL417"
+        hashStringToEnglish16a 6 "perf_data/bletchley" `shouldBe` "K48F01"
 
 testPaddingRefactored =
     it "correctly pads strings" $ do
@@ -88,4 +95,37 @@ testPaddingRefactored =
 
 testNegativeNumbers =
     it "doesn't explode if fed a negative number" $ do
-        toLocator16a 1 (-1) `shouldBe` "1"
+        toEnglish16a 1 (-1) `shouldBe` "1"
+
+testKnownLatin25 =
+    it "base 25 is correct" $ do
+        toLatin25 0 `shouldBe` "0"
+        toLatin25 1 `shouldBe` "1"
+        toLatin25 24 `shouldBe` "Z"
+        toLatin25 25 `shouldBe` "10"
+
+testRoundTripLatin25 =
+    prop "safe conversion to/from Latin25" prop_English16
+
+prop_Latin25 :: Int -> Bool
+prop_Latin25 i =
+  let
+    n = abs i
+    encoded = toLatin25 n
+    decoded = fromLatin25 encoded
+  in
+    n == decoded
+
+testHashLatin25 =
+    it "hashToLatin25 generates an appropriate hash" $ do
+        hashStringToLatin25 5 "You'll get used to it. Or, you'll have a psychotic episode"
+            `shouldBe` "XSAV1"
+
+testWidthGuardsEnglish16a =
+    it "errors if asking for more than 16 English16a characters" $ do
+        evaluate (toEnglish16a 17 1) `shouldThrow` anyErrorCall
+
+testWidthGuardsHashing =
+    it "errors if asking for more than 17 hash digits" $ do
+        S.length (hashStringToLatin25 17 "a") `shouldBe` 17
+        evaluate (hashStringToLatin25 18 "a") `shouldThrow` anyErrorCall

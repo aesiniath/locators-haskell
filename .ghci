@@ -2,3 +2,4 @@
 :set +m
 :set -isrc:tests
 :set -I.
+import Data.ByteString (ByteString)
