@@ -15,7 +15,7 @@ author:              Andrew Cowie <istathar@gmail.com>
 maintainer:          Andrew Cowie <istathar@gmail.com>
 copyright:           © 2013-2020 Athae Eredh Siniath and Others
 category:            Other
-tested-with:         GHC == 8.2.2, GHC == 8.4.2
+tested-with:         GHC == 8.8.3
 stability:           experimental
 
 build-type:          Simple
