@@ -23,9 +23,9 @@ module Data.Locator.Hashes (
 
 import Prelude hiding (toInteger)
 
-import Crypto.Hash.SHA1 as Crypto
+import Crypto.Hash as Crypto
+import qualified Data.ByteArray as B
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as S
 import Data.Char (chr, isDigit, isLower, isUpper, ord)
 import Data.Word
@@ -91,7 +91,7 @@ digest ws =
   where
     i  = concatToInteger h
     h  = B.unpack h'
-    h' = Crypto.hash x'
+    h' = Crypto.hash x' :: Crypto.Digest Crypto.SHA1
     x' = S.pack ws
 
 
