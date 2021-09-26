@@ -1,6 +1,6 @@
 cabal-version:       1.24
 name:                locators
-version:             0.3.0.3
+version:             0.3.1.0
 synopsis:            Human exchangable identifiers and locators
 license:             MIT
 license-file:        LICENSE
@@ -13,9 +13,9 @@ description:
 
 author:              Andrew Cowie <istathar@gmail.com>
 maintainer:          Andrew Cowie <istathar@gmail.com>
-copyright:           © 2013-2020 Athae Eredh Siniath and Others
+copyright:           © 2013-2021 Athae Eredh Siniath and Others
 category:            Other
-tested-with:         GHC == 8.8.3
+tested-with:         GHC == 8.10.7
 stability:           experimental
 
 build-type:          Simple
@@ -36,8 +36,7 @@ library
   other-modules:     Data.Locator.Common,
                      Data.Locator.Hashes,
                      Data.Locator.English16
-                     Data.Locator.Latin25
-
+                     Data.Locator.Latin26
 
   ghc-options:       -Wall
                      -Wwarn

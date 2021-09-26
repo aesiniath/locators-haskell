@@ -42,7 +42,7 @@
 -- turned out they're very blocky—so much so you have to squint). If the
 -- application is transcription or identification visually then the criteria is
 -- shapes that are distinct, rather than their sound. For these uses we provide
--- 'Latin25', a set of 25 symbols useful for identifiers in automated systems
+-- 'Latin26', a set of 26 symbols useful for identifiers in automated systems
 -- that nevertheless have to be operated or debugged by humans.
 --
 -- Finally, also included is code to work in base 62, which is simply
@@ -69,13 +69,13 @@ module Data.Locator
   , toEnglish16a
   , hashStringToEnglish16a
 
-    -- * Latin25: a visually distinct character set
+    -- * Latin26: a visually distinct character set
     -- An althernate character set chosen for visual distinctiveness (rather
     -- than the aural distinctiveness goal of "English16").
-  , Latin25(..)
-  , fromLatin25
-  , toLatin25
-  , hashStringToLatin25
+  , Latin26(..)
+  , fromLatin26
+  , toLatin26
+  , hashStringToLatin26
 
     -- * Base62: binary without punctuation
   , toBase62
@@ -93,4 +93,4 @@ module Data.Locator
 import Data.Locator.Common
 import Data.Locator.Hashes
 import Data.Locator.English16
-import Data.Locator.Latin25
+import Data.Locator.Latin26

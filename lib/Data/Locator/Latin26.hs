@@ -15,11 +15,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module Data.Locator.Latin25
-  ( Latin25(..)
-  , toLatin25
-  , fromLatin25
-  , hashStringToLatin25
+module Data.Locator.Latin26
+  ( Latin26(..)
+  , toLatin26
+  , fromLatin26
+  , hashStringToLatin26
   ) where
 
 import Prelude hiding (toInteger)
@@ -32,7 +32,7 @@ import Data.Locator.Common
 import Data.Locator.Hashes (padWithZeros)
 
 --
--- | A symbol set with twenty-five visually distinct characters.
+-- | A symbol set with twenty-six visually distinct characters.
 --
 -- These are not protected against similar pronounciations; if you need to
 -- read your identifiers /aloud/ use 'English16' instead.
@@ -44,7 +44,6 @@ import Data.Locator.Hashes (padWithZeros)
     --  | Six       -- Too close to G
     --  | Bravo     -- Too close to 8
     --  | Delta     -- Shape of D too close to O
-    --  | Foxtrot   -- A bit close to E, and since we've included S, skip
     --  | India     -- Too close to 1 and J
     --  | Oscar     -- Obvious conflict with 0
     --  | Quebec    -- The tail on Q is too easy to miss, thereby colliding with O/0
@@ -52,7 +51,7 @@ import Data.Locator.Hashes (padWithZeros)
     --  | Uniform   -- Too close to V
 
 -}
-data Latin25
+data Latin26
     = Zero'     -- ^ @\'0\'@ /0th/
     | One'      -- ^ @\'1\'@ /1st/
     | Three'    -- ^ @\'3\'@ /2nd/
@@ -63,6 +62,7 @@ data Latin25
     | Alpha'    -- ^ @\'A\'@ /7th/
     | Charlie'  -- ^ @\'C\'@ /8th/
     | Echo'     -- ^ @\'E\'@ /9th/
+    | Foxtrot'     -- ^ @\'F\'@ /9th/
     | Golf'     -- ^ @\'G\'@ /10th/
     | Hotel'    -- ^ @\'H\'@ /11th/
     | Juliet'   -- ^ @\'J\'@ /12th/
@@ -80,7 +80,7 @@ data Latin25
     | Zulu'     -- ^ @\'Z\'@ /24th/
     deriving (Eq, Ord, Enum, Bounded)
 
-instance Locator Latin25 where
+instance Locator Latin26 where
     locatorToDigit x =
         case x of
             Zero'   -> '0'
@@ -93,6 +93,7 @@ instance Locator Latin25 where
             Alpha'  -> 'A'
             Charlie' -> 'C'
             Echo'   -> 'E'
+            Foxtrot' -> 'F'
             Golf'   -> 'G'
             Hotel'  -> 'H'
             Juliet' -> 'J'
@@ -109,7 +110,7 @@ instance Locator Latin25 where
             Yankee' -> 'Y'
             Zulu'   -> 'Z'
 
-    digitToLocator :: Char -> Latin25
+    digitToLocator :: Char -> Latin26
     digitToLocator c =
         case c of
             '0' -> Zero'
@@ -122,6 +123,7 @@ instance Locator Latin25 where
             'A' -> Alpha'
             'C' -> Charlie'
             'E' -> Echo'
+            'F' -> Foxtrot'
             'G' -> Golf'
             'H' -> Hotel'
             'J' -> Juliet'
@@ -140,45 +142,45 @@ instance Locator Latin25 where
             _   -> error "Illegal digit"
 
 
-instance Show Latin25 where
+instance Show Latin26 where
     show x = [c]
       where
         c = locatorToDigit x
 
 --
--- | Given a number, convert it to a string in the Latin25 base 25 symbol
+-- | Given a number, convert it to a string in the Latin26 base 25 symbol
 -- alphabet. This is useful for primary keys and object identifiers that you
 -- need to scan for in log output, for example.
 --
-toLatin25 :: Int -> String
-toLatin25 x =
-    showIntAtBase 25 (represent Zulu') x ""
+toLatin26 :: Int -> String
+toLatin26 x =
+    showIntAtBase 26 (represent Zulu') x ""
 
 --
 -- | Given a number encoded in Locator16, convert it back to an integer.
 --
-fromLatin25 :: String -> Int
-fromLatin25 ss =
+fromLatin26 :: String -> Int
+fromLatin26 ss =
     foldl (multiply Zulu') 0 ss
 
 --
 -- | Take an arbitrary sequence of bytes, hash it with SHA1, then format as a
--- short @limit@-long Latin25 string.
+-- short @limit@-long Latin26 string.
 --
--- >>> hashStringToLatin25 5 "You'll get used to it. Or, you'll have a psychotic episode"
--- XSAV1
+-- >>> hashStringToLatin26 5 "You'll get used to it. Or, you'll have a psychotic episode"
+-- SG8XP
 --
 -- 17 characters is the widest hash you can request.
 --
-hashStringToLatin25 :: Int -> ByteString -> ByteString
-hashStringToLatin25 limit s'
+hashStringToLatin26 :: Int -> ByteString -> ByteString
+hashStringToLatin26 limit s'
   | limit > 17 = error "Can only request a maximum width of 17, sorry"
   | otherwise  =
   let
     s  = S.unpack s'
     n  = digest s               -- SHA1 hash
     r  = mod n upperBound       -- trim to specified number of base 25 chars
-    x  = toLatin25 r            -- express in Latin25
+    x  = toLatin26 r            -- express in Latin26
     b' = S.pack (padWithZeros limit x)
   in
     b'
