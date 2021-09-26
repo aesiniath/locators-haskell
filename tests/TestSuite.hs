@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 {-# OPTIONS -fno-warn-unused-imports #-}
 {-# OPTIONS -fno-warn-orphans #-}
 {-# OPTIONS -fno-warn-type-defaults #-}
@@ -7,9 +8,9 @@
 module TestSuite where
 
 import Control.Exception (evaluate)
+import Test.HUnit
 import Test.Hspec
 import Test.Hspec.QuickCheck
-import Test.HUnit
 import Test.QuickCheck (elements, property)
 import Test.QuickCheck.Arbitrary (Arbitrary, arbitrary)
 
@@ -47,18 +48,14 @@ suite = do
     describe "Hashes" $ do
         testPaddingRefactored
 
-
 testRoundTripEnglish16 =
     prop "safe conversion to/from English16" prop_English16
 
 prop_English16 :: Int -> Bool
 prop_English16 i =
-  let
-    n = abs i
-    decoded = fromEnglish16 (toEnglish16 n)
-  in
-    n == decoded
-
+    let n = abs i
+        decoded = fromEnglish16 (toEnglish16 n)
+     in n == decoded
 
 --
 -- Have to do these manually, since Locator16a is not round-trip safe.
@@ -79,8 +76,8 @@ testPaddingRefactored =
     it "correctly pads strings" $ do
         padWithZeros 5 "1" `shouldBe` "00001"
         padWithZeros 5 "123456" `shouldBe` "123456"
-        (padWithZeros 11 . toBase62 $ 2^64) `shouldBe` "LygHa16AHYG"
-        (hashStringToBase62 11 . S.pack . show $ 2^64) `shouldBe` "k8SQgkJtxLo"
+        (padWithZeros 11 . toBase62 $ 2 ^ 64) `shouldBe` "LygHa16AHYG"
+        (hashStringToBase62 11 . S.pack . show $ 2 ^ 64) `shouldBe` "k8SQgkJtxLo"
 
 testNegativeNumbers =
     it "doesn't explode if fed a negative number" $ do
@@ -98,12 +95,10 @@ testRoundTripLatin26 =
 
 prop_Latin26 :: Int -> Bool
 prop_Latin26 i =
-  let
-    n = abs i
-    encoded = toLatin26 n
-    decoded = fromLatin26 encoded
-  in
-    n == decoded
+    let n = abs i
+        encoded = toLatin26 n
+        decoded = fromLatin26 encoded
+     in n == decoded
 
 testHashLatin26 =
     it "hashToLatin26 generates an appropriate hash" $ do
