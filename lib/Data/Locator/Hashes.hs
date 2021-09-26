@@ -1,25 +1,11 @@
---
--- Human exchangable identifiers and locators
---
--- Copyright © 2011-2017 Operational Dynamics Consulting, Pty Ltd
---
--- The code in this file, and the program it is a part of, is
--- made available to you by its authors as open source software:
--- you can redistribute it and/or modify it under the terms of
--- the BSD licence.
---
--- This code originally licenced GPLv2. Relicenced BSD3 on 2 Jan 2014.
---
-
 {-# LANGUAGE OverloadedStrings #-}
 
 module Data.Locator.Hashes (
     toBase62,
     fromBase62,
     padWithZeros,
-    hashStringToBase62
+    hashStringToBase62,
 ) where
-
 
 import Prelude hiding (toInteger)
 
@@ -47,20 +33,20 @@ toBase62 x =
     showIntAtBase 62 represent x ""
 
 --
--- | Utility function to prepend \'0\' characters to a string representing a
--- number. This allows you to ensure a fixed width for numbers that are less
--- than the desired width in size. This comes up frequently when representing
--- numbers in other bases greater than 10 as they are inevitably presented as
--- text, and not having them evenly justified can (at best) be ugly and (at
--- worst) actually lead to parsing and conversion bugs.
---
+
+{- | Utility function to prepend \'0\' characters to a string representing a
+ number. This allows you to ensure a fixed width for numbers that are less
+ than the desired width in size. This comes up frequently when representing
+ numbers in other bases greater than 10 as they are inevitably presented as
+ text, and not having them evenly justified can (at best) be ugly and (at
+ worst) actually lead to parsing and conversion bugs.
+-}
 padWithZeros :: Int -> String -> String
 padWithZeros digits str =
     pad ++ str
   where
     pad = take len (replicate digits '0')
     len = digits - length str
-
 
 value :: Char -> Int
 value c
@@ -77,43 +63,40 @@ fromBase62 :: String -> Integer
 fromBase62 ss =
     foldl multiply 0 ss
 
-
 concatToInteger :: [Word8] -> Integer
 concatToInteger bytes =
     foldl fn 0 bytes
   where
     fn acc b = (acc * 256) + (fromIntegral b)
 
-
 digest :: String -> Integer
 digest ws =
     i
   where
-    i  = concatToInteger h
-    h  = B.unpack h'
+    i = concatToInteger h
+    h = B.unpack h'
     h' = Crypto.hash x' :: Crypto.Digest Crypto.SHA1
     x' = S.pack ws
 
+--
 
---
--- | Take an arbitrary string, hash it, then pad it with zeros up to be a
--- @digits@-long string in base 62.
---
--- You may be interested to know that the 160-bit SHA1 hash used here can be
--- expressed without loss as 27 digits of base 62, for example:
---
--- >>> hashStringToBase62 27 "Hello World"
--- 1T8Sj4C5jVU6iQXCwCwJEPSWX6u
---
+{- | Take an arbitrary string, hash it, then pad it with zeros up to be a
+ @digits@-long string in base 62.
+
+ You may be interested to know that the 160-bit SHA1 hash used here can be
+ expressed without loss as 27 digits of base 62, for example:
+
+ >>> hashStringToBase62 27 "Hello World"
+ 1T8Sj4C5jVU6iQXCwCwJEPSWX6u
+-}
 hashStringToBase62 :: Int -> ByteString -> ByteString
 hashStringToBase62 digits s' =
     r'
   where
     s = S.unpack s'
-    n  = digest s               -- SHA1 hash
+    n = digest s -- SHA1 hash
     limit = 62 ^ digits
-    x  = mod n limit            -- trim to specified number base62 chars
+    x = mod n limit -- trim to specified number base62 chars
     str = toBase62 x
-    r  = padWithZeros digits str  -- convert to String
+    r = padWithZeros digits str -- convert to String
     r' = S.pack r
-
