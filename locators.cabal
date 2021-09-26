@@ -1,6 +1,6 @@
 cabal-version:       1.24
 name:                locators
-version:             0.3.1.0
+version:             0.3.0.4
 synopsis:            Human exchangable identifiers and locators
 license:             MIT
 license-file:        LICENSE
@@ -36,7 +36,7 @@ library
   other-modules:     Data.Locator.Common,
                      Data.Locator.Hashes,
                      Data.Locator.English16
-                     Data.Locator.Latin26
+                     Data.Locator.Latin25
 
   ghc-options:       -Wall
                      -Wwarn
