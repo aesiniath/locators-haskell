@@ -19,7 +19,7 @@ import Data.Locator.Common
 import Data.Locator.Hashes (padWithZeros)
 
 {- |
-A symbol set with twenty-six visually distinct characters.
+A symbol set with twenty-five visually distinct characters.
 
 These are not protected against similar pronounciations; if you need to
 read your identifiers /aloud/ use 'English16' instead.
@@ -32,6 +32,7 @@ read your identifiers /aloud/ use 'English16' instead.
     --  | Six       -- Too close to G
     --  | Bravo     -- Too close to 8
     --  | Delta     -- Shape of D too close to O
+    --  | Foxtrot   -- Excluded because too close to E
     --  | India     -- Too close to 1 and J
     --  | Oscar     -- Obvious conflict with 0
     --  | Quebec    -- The tail on Q is too easy to miss, thereby colliding with O/0
