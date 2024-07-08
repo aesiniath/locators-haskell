@@ -1,6 +1,6 @@
 cabal-version:       1.24
 name:                locators
-version:             0.3.0.4
+version:             0.3.0.5
 synopsis:            Human exchangable identifiers and locators
 license:             MIT
 license-file:        LICENSE
@@ -13,9 +13,9 @@ description:
 
 author:              Andrew Cowie <istathar@gmail.com>
 maintainer:          Andrew Cowie <istathar@gmail.com>
-copyright:           © 2013-2021 Athae Eredh Siniath and Others
+copyright:           © 2013-2024 Athae Eredh Siniath and Others
 category:            Other
-tested-with:         GHC == 8.10.7
+tested-with:         GHC == 9.6.5
 stability:           experimental
 
 build-type:          Simple
@@ -27,7 +27,7 @@ library
                      memory,
                      bytestring,
                      containers,
-                     cryptonite
+                     crypton
 
   hs-source-dirs:    lib
   include-dirs:      .
@@ -59,7 +59,7 @@ test-suite           check
                      QuickCheck,
                      bytestring,
                      containers,
-                     cryptonite,
+                     crypton,
                      locators
 
   hs-source-dirs:    tests
@@ -79,7 +79,7 @@ test-suite           check
 
 source-repository    head
   type:              git
-  location:          git@github.com:aesiniath/locators.git
+  location:          git@github.com:aesiniath/locators-haskell.git
 
 
 -- vim: set tabstop=21 expandtab:
